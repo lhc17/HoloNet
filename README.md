@@ -6,7 +6,7 @@
 
 ## Getting Started
 
-Documentation and Tutorials (https://holonet-tutorial.readthedocs.io/en/latest/)
+[Documentation and Tutorials]( https://holonet-tutorial.readthedocs.io/en/latest/ )
 
 ## Citing
 
