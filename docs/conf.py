@@ -17,7 +17,6 @@ release = '0.0.4'
 # -- General configuration
 
 extensions = [
-    'myst_parser',
     'sphinx.ext.autodoc',
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
