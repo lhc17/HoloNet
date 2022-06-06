@@ -1,17 +1,24 @@
 # Configuration file for the Sphinx documentation builder.
 
+import sys
+from pathlib import Path
+HERE = Path(__file__).parent
+sys.path[:0] = [str(HERE.parent)]
+
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'HoloNet'
+copyright = '2022, Li Haochen'
+author = 'Li Haochen'
 
-release = '0.1'
-version = '0.1.0'
+# The full version, including alpha/beta/rc tags
+release = '0.0.4'
 
 # -- General configuration
 
 extensions = [
+    'myst_parser',
+    'sphinx.ext.autodoc',
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
