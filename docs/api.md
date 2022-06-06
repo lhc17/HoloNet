@@ -1,30 +1,15 @@
-```{eval-rst}
-.. module:: HoloNet
-```
+API
+======
 
-```{eval-rst}
-.. automodule:: HoloNet
-   :noindex:
-```
+Preprocessing:
+-----
 
-# API
+.. automodule:: io
 
-Import Scanpy as:
+   :pp:
 
-```
-import HoloNet as hn
-```
 
-```{note}
-Additional functionality is available in the broader {doc}`ecosystem <../ecosystem>`, with some tools being wrapped in the {mod}`scanpy.external` module.
-```
+Test:
+-----
 
-## Preprocessing: `pp`
-
-```{eval-rst}
-.. module:: HoloNet.pp
-```
-
-```{eval-rst}
-.. currentmodule:: HoloNet
-```
+.. autofunction:: HoloNet.pl.find_genes_linked_to_ce
