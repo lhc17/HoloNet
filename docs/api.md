@@ -4,9 +4,9 @@ API
 Preprocessing:
 -----
 
-.. automodule:: io
+.. automodule:: HoloNet
 
-   :pp:
+   :members: pp
 
 
 Test:
