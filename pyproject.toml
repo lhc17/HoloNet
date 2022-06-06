@@ -1,0 +1,5 @@
+[project.optional-dependencies]
+doc = [
+    "sphinx>=4.4",
+    "myst-parser",
+    ]
