@@ -20,4 +20,4 @@ Contents
 
    Installation
    Tutorials
-   API
+   api
