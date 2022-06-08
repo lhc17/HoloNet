@@ -2,8 +2,8 @@ HoloNet: Decoding functional cell–cell communication events by multi-view grap
 ====================================================================================================
 |docs| |pypi|
 
-.. |docs| image::  https://github.com/icbi-lab/infercnvpy/workflows/docs/badge.svg
-    :target: https://icbi-lab.github.io/infercnvpy
+.. |docs| image:: https://readthedocs.org/projects/holonet-doc/badge/?version=latest
+    :target: https://holonet-doc.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
     
 .. |pypi| image:: https://img.shields.io/pypi/v/HoloNet
