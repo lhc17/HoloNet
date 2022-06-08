@@ -39,6 +39,7 @@ requires = [
     'pycairo>=1.20; sys_platform == "win32"',
     'leidenalg',
     'pyreadr',
+    'pynvml',
 ]
 
 [tool.flit.metadata.requires-extra]
@@ -60,7 +61,6 @@ doc = [
     'jupyter_client',
     'ipykernel',
     'myst-parser',
-    'pynvml',
 ]
 
 [tool.flit.metadata.urls]
