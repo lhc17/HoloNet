@@ -3,6 +3,6 @@
 .. toctree::
 
    installation
-   tutorials
+   main_tutorial
    api
    references
