@@ -5,4 +5,4 @@
    installation
    main_tutorial
    api
-   references
+   zzz_bibliography
