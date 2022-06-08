@@ -1,11 +1,10 @@
 API
 ===
 
-Import infercnvpy together with scanpy as
+Import HoloNet as
 
 .. code-block:: python
 
-   import scanpy as sc
    import HoloNet as hn
 
 
@@ -13,6 +12,10 @@ Import infercnvpy together with scanpy as
 
 Preprocessing: `pp`
 ------------------
+
+Import spatial transcriptomic data into :class:`~anndata.AnnData`.
+Extract and filter the ligand-receptor pair dataframe
+
 
 .. module:: HoloNet.preprocessing
 
@@ -27,18 +30,49 @@ Preprocessing: `pp`
 Tools: `tl`
 ------------------
 
+Some tool functions.
+
+
 .. module:: HoloNet.tools
+
+
+Constructing multi-view CE network
+^^^^^^^^
 
 .. autosummary::
    :toctree: ./generated
 
    compute_ce_tensor
    filter_ce_tensor
+   
+
+Computing centralities
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated
+   
    compute_ce_network_eigenvector_centrality
    compute_ce_network_degree_centrality
+   
+   
+Clustering lr pairs
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated
+   
+   cluster_lr_based_on_ce
+
+
+Other functions
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated
+   
    dist_factor_calculate
    default_w_visium
-   cluster_lr_based_on_ce
 
    
 Predicting: `pr`
