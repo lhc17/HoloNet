@@ -24,7 +24,7 @@ Preprocessing: `pp`
    
    
    
-Preprocessing: `tl`
+Tools: `tl`
 ------------------
 
 .. module:: HoloNet.tools
@@ -41,7 +41,7 @@ Preprocessing: `tl`
    cluster_lr_based_on_ce
 
    
-Preprocessing: `pr`
+Predicting: `pr`
 ------------------
 
 .. module:: HoloNet.predicting
@@ -64,7 +64,7 @@ Preprocessing: `pr`
    get_one_case_expr
 
 
-Preprocessing: `pl`
+Plotting: `pl`
 ------------------
 
 .. module:: HoloNet.plotting
