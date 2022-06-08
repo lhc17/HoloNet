@@ -10,7 +10,7 @@ HoloNet: Decoding functional cell–cell communication events by multi-view grap
     :target: https://pypi.org/project/HoloNet/
     :alt: PyPI
 
-.. image:: img/HoloNet_overview.png
+.. image:: img/ST_CCI_figure1_new_new_0601.jpg
     :align: center
     :alt: The The overall workflow of HoloNet
 
