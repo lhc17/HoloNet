@@ -12,6 +12,7 @@ module = 'HoloNet'
 author = 'Li Haochen'
 author-email = 'lhc17@mails.tsinghua.edu.cn'
 home-page = 'https://github.com/lhc17/HoloNet'
+Source = 'https://github.com/lhc17/HoloNet'
 description-file = "README.md"
 classifiers = [
     'License :: OSI Approved :: BSD License',
@@ -59,6 +60,8 @@ doc = [
     'pycairo',
     'jupyter_client',
     'ipykernel',
+    'myst-parser',
+    'HoloNet'
 ]
 
 [tool.flit.metadata.urls]
