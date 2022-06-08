@@ -27,7 +27,6 @@ api_rel_dir = "_static/api"
 
 nitpicky = True  # Warn about broken links
 needs_sphinx = "2.0"  # Nicer param docs
-bibtex_bibfiles = ["references.bib"]
 
 # -- General configuration
 
@@ -37,7 +36,6 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
-    "sphinxcontrib.bibtex",
     "nbsphinx",
     "sphinx_autodoc_typehints",
     "scanpydoc",
