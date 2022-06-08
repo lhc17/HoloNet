@@ -20,8 +20,8 @@ Installation
 
 Getting started
 ^^^^^^^^^^^^^^^
+- `Documentation and Tutorials <https://holonet-doc.readthedocs.io/en/latest/>`_
 
-[Documentation and Tutorials]( https://holonet-doc.readthedocs.io/en/latest/ )
 
 Citing
 ^^^^^^^^^^^^^^^
