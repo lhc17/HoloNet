@@ -44,7 +44,7 @@ Preprocessing: `tl`
 Preprocessing: `pr`
 ------------------
 
-.. module:: HoloNet.pr
+.. module:: HoloNet.predicting
 
 .. autosummary::
    :toctree: ./generated
