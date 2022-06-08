@@ -5,3 +5,4 @@
    installation
    tutorials
    api
+   references
