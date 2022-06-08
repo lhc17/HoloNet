@@ -2,40 +2,100 @@
 
 import sys
 from pathlib import Path
+from datetime import datetime
+import jupytext
+import warnings
+
 HERE = Path(__file__).parent
-sys.path[:0] = [str(HERE.parent), str(HERE.parent)+'/HoloNet']
+sys.path.insert(0, str(HERE.parent))
+sys.path.insert(0, str(HERE / "extensions"))
+
+from HoloNet import __author__, __version__
 
 # -- Project information
 
 project = 'HoloNet'
-copyright = '2022, Li Haochen'
-author = 'Li Haochen'
+author = __author__
+copyright = f"{datetime.now():%Y}, {author}."
+version = __version__
 
-# The full version, including alpha/beta/rc tags
-release = '0.0.4'
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
+api_dir = HERE / "_static" / "api"
+api_rel_dir = "_static/api"
+
+
+nitpicky = True  # Warn about broken links
+needs_sphinx = "2.0"  # Nicer param docs
+
 
 # -- General configuration
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.duration',
-    'sphinx.ext.doctest',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "sphinxcontrib.bibtex",
+    "nbsphinx",
+    "sphinx_autodoc_typehints",
+    "scanpydoc",
+    *[p.stem for p in (HERE / "extensions").glob("*.py")],
 ]
+
+autosummary_generate = True
+autodoc_member_order = "bysource"
+default_role = "literal"
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = False
+napoleon_use_rtype = True  # having a separate entry generally helps readability
+napoleon_use_param = True
+napoleon_use_ivar = True
+napoleon_custom_sections = [("Params", "Parameters")]
+todo_include_todos = False
+
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
 }
-intersphinx_disabled_domains = ['std']
 
-templates_path = ['_templates']
+typehints_defaults = None
 
-# -- Options for HTML output
+# -- nbsphinx Tutorials ----------------------------------------------------------------
 
-html_theme = 'sphinx_rtd_theme'
+# Enable jupytext notebooks
+nbsphinx_custom_formats = {
+    ".md": lambda s: jupytext.reads(s, ".md"),
+}
+# nbsphinx_execute = "always"
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg'}",
+    "--InlineBackend.rc={'figure.dpi': 96}",
+]
+nbsphinx_timeout = 300
 
-# -- Options for EPUB output
-epub_show_urls = 'footnote'
+
+# -- HTML styling ----------------------------------------------------------------------
+
+html_theme = "scanpydoc"
+# add custom stylesheet
+# https://stackoverflow.com/a/43186995/2340703
+html_static_path = ["_static"]
+pygments_style = "sphinx"
+
+html_theme_options = dict(navigation_depth=4, logo_only=True)
+
+
+def setup(app):
+    pass
+
+
+nitpick_ignore = [
+    ("py:class", "igraph.Graph"),
+    ("py:class", "igraph.Layout"),
+    ("py:class", "igraph.layout.Layout"),
+]
+
