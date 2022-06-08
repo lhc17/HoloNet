@@ -14,7 +14,7 @@ Import infercnvpy together with scanpy as
 Preprocessing: `pp`
 ------------------
 
-.. module:: HoloNet.pp
+.. module:: HoloNet.preprocessing
 
 .. autosummary::
    :toctree: ./generated
@@ -27,7 +27,7 @@ Preprocessing: `pp`
 Preprocessing: `tl`
 ------------------
 
-.. module:: HoloNet.tl
+.. module:: HoloNet.tools
 
 .. autosummary::
    :toctree: ./generated
@@ -68,7 +68,7 @@ Preprocessing: `pr`
 Preprocessing: `pl`
 ------------------
 
-.. module:: HoloNet.pl
+.. module:: HoloNet.plotting
 
 .. autosummary::
    :toctree: ./generated
