@@ -2,7 +2,7 @@
 
 .. toctree::
 
-   installation
-   tutorials
+   Installation
+   Tutorials
    api
-   references
+   References
