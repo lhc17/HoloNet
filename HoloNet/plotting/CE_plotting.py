@@ -4,7 +4,7 @@ from typing import List, Union, Optional
 import numpy as np
 import pandas as pd
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 
 from .base_plot import cell_type_level_network, feature_plot
 from ..tools.CE_network_centrality import compute_ce_network_eigenvector_centrality, \
