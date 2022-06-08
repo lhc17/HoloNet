@@ -58,8 +58,9 @@ todo_include_todos = False
 
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
+    python=("https://docs.python.org/3", None),
+    scanpy=("https://scanpy.readthedocs.io/en/stable/", None),
+    anndata=("https://anndata.readthedocs.io/en/stable/", None),
 }
 
 typehints_defaults = None
