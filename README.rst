@@ -1,6 +1,7 @@
 HoloNet: Decoding functional cell–cell communication events by multi-view graph learning on spatial transcriptomics
 ====================================================================================================
 |docs| |pypi|
+
 .. |docs| image::  https://github.com/icbi-lab/infercnvpy/workflows/docs/badge.svg
     :target: https://icbi-lab.github.io/infercnvpy
     :alt: Documentation Status
