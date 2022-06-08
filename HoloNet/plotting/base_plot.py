@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from matplotlib.colors import Colormap
 
 
@@ -71,7 +71,7 @@ def feature_plot(feature_mat: Union[torch.Tensor, np.ndarray],
         feature_mat = (feature_mat - feature_mat.min()) / (feature_mat.max() - feature_mat.min())
 
     plot_feature_adata = AnnData(np.array(feature_mat), obs=adata.obs,
-                                 var=var_mat, uns=adata.uns, obsm=adata.obsm, dtype='float64')
+                                      var=var_mat, uns=adata.uns, obsm=adata.obsm, dtype='float64')
 
     if cutoff is not None:
         max_value = cutoff * plot_feature_adata[:, plot_feature].X.max()

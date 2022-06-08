@@ -174,12 +174,12 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
         SR_network[row, col] = 0
         SR_network_list.append((SR_network - SR_network.min()) / (SR_network.max() - SR_network.min() + 1e-6))
         cell_type_impact = cell_type_impact.detach().numpy()
-        cell_type_impact_list.append((cell_type_impact - cell_type_impact.min()) /
+        cell_type_impact_list.append((cell_type_impact - cell_type_impact.min()) / 
                                      (cell_type_impact.max() - cell_type_impact.min() + 1e-6))
 
     SR_network = np.stack(SR_network_list).mean(0)
     cell_type_impact = np.stack(cell_type_impact_list).mean(0)
-
+    
     SR_network = (SR_network - SR_network.min()) / (SR_network.max() - SR_network.min() + 1e-6)
 
     cell_type_level_network(sr_network=SR_network,
@@ -237,7 +237,7 @@ def delta_e_proportion(trained_MGC_model_list: List[MGC_Model],
 
     ce_list = []
     b_list = []
-
+      
     for i in tqdm(range(len(trained_MGC_model_list))):
         model = trained_MGC_model_list[i]
         x = model.mgc(adj.matmul(X))
@@ -262,9 +262,9 @@ def delta_e_proportion(trained_MGC_model_list: List[MGC_Model],
 
     proportion_range = tmp_df['delta_e_proportion'].max() - tmp_df['delta_e_proportion'].min()
     if low_ylim is None:
-        low_ylim = max(round(tmp_df['delta_e_proportion'].min() * 20) / 20 - proportion_range / 2, 0)
+        low_ylim = max(round(tmp_df['delta_e_proportion'].min() * 20) / 20 - proportion_range/2, 0)
     if high_ylim is None:
-        high_ylim = min(round(tmp_df['delta_e_proportion'].max() * 20) / 20 + proportion_range / 2, 1)
+        high_ylim = min(round(tmp_df['delta_e_proportion'].max() * 20) / 20 + proportion_range/2, 1)
     ax.set(ylim=(low_ylim, high_ylim))
 
     if fname is not None:

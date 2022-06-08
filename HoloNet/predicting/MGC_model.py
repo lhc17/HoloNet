@@ -75,10 +75,10 @@ class MGC_Model(nn.Module):
         else:
             x = self.mgc(adj_matmul_input_x)
             x = F.relu(x)
-
+            
             x_b = self.linear_b(x)
             x_ce = self.linear_ce(input_x)
             x = x_b + x_ce
-
+            
         x = torch.sigmoid(x)
         return x

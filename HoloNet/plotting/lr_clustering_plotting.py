@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import torch
 import umap
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 
 from .base_plot import feature_plot
 from ..colorSchemes import color_sheet
@@ -119,12 +119,12 @@ def lr_cluster_ce_hotspot_plot(lr_df: pd.DataFrame,
         tmp_list.append(cell_cci_centrality[tmp_index].sum(0))
 
     clusters = ['cluster' + str(i) for i in np.unique(lr_df[cluster_col])]
-
+    
     if fname is None:
         for i, cluster_i in enumerate(clusters):
             feature_plot(torch.stack(tmp_list), adata, feature_names=clusters,
-                         plot_feature=cluster_i, **kwargs)
-
+                         plot_feature=cluster_i,  **kwargs)
+            
     else:
         for i, cluster_i in enumerate(clusters):
             feature_plot(torch.stack(tmp_list), adata, feature_names=clusters,

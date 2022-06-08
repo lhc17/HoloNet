@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 
 from .base_plot import feature_plot
 from ..colorSchemes import color_sheet
@@ -195,7 +195,7 @@ def single_view_mgc_coef_plot(lr_df: pd.DataFrame,
         max_value, min_value = max(max_value, green_line), min(min_value, green_line)
 
     plt.ylim(min_value - 0.05, max_value + 0.05)
-
+    
     if plot_lr_list is not None:
         for target_lr in plot_lr_list:
             target_lr_id = list(lr_df_tmp['LR_Pair']).index(target_lr)

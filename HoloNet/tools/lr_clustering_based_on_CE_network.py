@@ -54,9 +54,9 @@ def cluster_lr_based_on_ce(ce_tensor: torch.Tensor,
     A LR-gene dataframe added the 'cluster' column.
 
     """
-
+    
     seed_torch()
-
+    
     if (cell_cci_centrality is None) and (cluster_based != 'edge_overlap'):
         if centrality_measure == 'Degree':
             cell_cci_centrality = compute_ce_network_degree_centrality(ce_tensor, **kwargs)

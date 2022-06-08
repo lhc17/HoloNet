@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import pandas as pd
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from tqdm import tqdm
 
 from .MGC_model import MGC_Model
@@ -46,7 +46,7 @@ def mgc_training_for_multiple_targets(X: torch.Tensor,
 
     trained_MGC_model_list_only_type_list = []
     trained_MGC_model_list_type_MGC_list = []
-
+    
     device = get_device(device)
     for i in tqdm(range(target_all_gene_expr.shape[0])):
         target_gene_expr = target_all_gene_expr[i, :]
@@ -100,15 +100,15 @@ def get_mgc_result_for_multiple_targets(trained_multi_MGC_model_list: List[List[
         A dataframe for the generated expression of multiple genes in each cell.
 
     """
-
+    
     device = get_device(device)
-
+    
     predicted_expr_list = []
     target_gene_num = len(trained_multi_MGC_model_list)
 
     for i in tqdm(range(target_gene_num)):
         trained_MGC_model_tmp = trained_multi_MGC_model_list[i]
-        predicted_expr = get_mgc_result(trained_MGC_model_tmp, X, adj,
+        predicted_expr = get_mgc_result(trained_MGC_model_tmp, X, adj, 
                                         device=device, hide_repeat_tqdm=True)
         predicted_expr_list.append(predicted_expr.squeeze(1))
 

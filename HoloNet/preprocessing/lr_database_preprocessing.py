@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 
 
 def get_expressed_lr_df(lr_df: pd.DataFrame,
