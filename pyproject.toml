@@ -38,7 +38,6 @@ requires = [
 ]
 
 [tool.flit.metadata.requires-extra]
-]
 doc = [
     'sphinx>=4.2',
     'sphinx_rtd_theme>=0.4',
