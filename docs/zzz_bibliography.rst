@@ -1,10 +1,15 @@
-Bibliography
-============
+References
+=============
 
-.. Comment: 
-   needs to be the alphabetically last file in the directory:
-   https://github.com/mcmtroffaes/sphinxcontrib-bibtex/issues/8
+.. [Amid19] Amid & Warmuth (2019),
+   *TriMap: Large-scale Dimensionality Reduction Using Triplets*,
+   `arXiv <https://arxiv.org/abs/1910.00204>`__.
 
-.. bibliography:: references.bib
-   :cited:
-   :style: alpha
+.. [Amir13] Amir *et al.* (2013),
+   *viSNE enables visualization of high dimensional single-cell data and reveals phenotypic heterogeneity of leukemia*,
+   `Nature Biotechnology <https://doi.org/10.1038/nbt.2594>`__.
+
+.. [Angerer16] Angerer *et al.* (2016),
+   *destiny – diffusion maps for large-scale single-cell data in R*,
+   `Bioinformatics <https://doi.org/10.1093/bioinformatics/btv715>`__.
+
