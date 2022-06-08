@@ -1,19 +1,18 @@
+import os
+import random
 from copy import deepcopy
 from typing import Optional, List
 
 import numpy as np
+import pynvml
 import torch
 from torch import optim
 from torch.nn import functional as F
 from torch.optim import lr_scheduler
 from tqdm import tqdm
-import pynvml
-import random
-import os
 
 from .MGC_model import MGC_Model
 from .input_preprocessing import train_test_mask
-
 
 
 def mgc_repeat_training(X: torch.Tensor,
@@ -81,13 +80,13 @@ def mgc_repeat_training(X: torch.Tensor,
     A list of trained MGC model for generating the expression of one target gene.
 
     """
-    
+
     seed_torch()
     if hidden_num is None:
         hidden_num = X.shape[1]
     if len(target.shape) == 1:
         target = target.unsqueeze(1)
-        
+
     device = get_device(device)
 
     train_mask, test_mask, val_mask = train_test_mask(X.shape[0], train_set_ratio=train_set_ratio,
@@ -109,7 +108,6 @@ def mgc_repeat_training(X: torch.Tensor,
 def mgc_training(X, adj, target_gene_expr, train_mask, test_mask, val_mask, seed=0,
                  only_cell_type=False, hidden_num=1, max_epoch=100, lr=0.1,
                  weight_decay=5e-4, step_size=10, gamma=0.9, display=True, device='cpu'):
-
     seed_torch(seed)
     cell_type_num = X.shape[1]
     lr_pair_num = adj.shape[0]
@@ -129,7 +127,7 @@ def mgc_training(X, adj, target_gene_expr, train_mask, test_mask, val_mask, seed
     test_MSE_list = []
     val_MSE_list = []
     MGC_model_list = []
-    
+
     if only_cell_type:
         adj_matmul_X = X.to(device)
     else:
@@ -137,9 +135,9 @@ def mgc_training(X, adj, target_gene_expr, train_mask, test_mask, val_mask, seed
     X = X.to(device)
     for epoch in range(max_epoch):
         z = MGC_model(X, adj_matmul_X)
-        loss = F.mse_loss(z[train_mask, ], target_gene_expr[train_mask, ], reduction='mean').to(device)
-        val_MSE = F.mse_loss(z[val_mask, ], target_gene_expr[val_mask, ], reduction='mean')
-        test_MSE = F.mse_loss(z[test_mask, ], target_gene_expr[test_mask, ], reduction='mean')
+        loss = F.mse_loss(z[train_mask,], target_gene_expr[train_mask,], reduction='mean').to(device)
+        val_MSE = F.mse_loss(z[val_mask,], target_gene_expr[val_mask,], reduction='mean')
+        test_MSE = F.mse_loss(z[test_mask,], target_gene_expr[test_mask,], reduction='mean')
 
         loss_list.append(loss.detach())
         test_MSE_list.append(test_MSE.detach().cpu())
@@ -186,9 +184,9 @@ def get_mgc_result(trained_MGC_model_list: List[MGC_Model],
     The generated expression profile of the target gene (cell_num * 1).
 
     """
-    
+
     device = get_device(device)
-    
+
     repeat_num = len(trained_MGC_model_list)
     adj_matmul_X = adj.matmul(X).to(device)
     X = X.to(device)
@@ -223,7 +221,7 @@ def mgc_training_with_single_view(X: torch.Tensor,
                                                          hide_repeat_tqdm=True, **kwargs)
         tmp = get_mgc_result(trained_MGC_model_list_tmp, X, adj[i].unsqueeze(0),
                              hide_repeat_tqdm=True)
-        coef_list.append(np.corrcoef(tmp.squeeze(1), target)[0, 1])
+        coef_list.append(np.corrcoef(tmp.squeeze(1).T, target.T)[0, 1])
 
     return coef_list
 
@@ -240,17 +238,16 @@ def get_device(device):
             device = 'cuda:' + str(np.argmax(np.array(cuda_mem_free)))
     else:
         device = 'cpu'
-        
+
     return device
 
 
 def seed_torch(seed=100):
     random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed) # 为了禁止hash随机化，使得实验可复现
+    os.environ['PYTHONHASHSEED'] = str(seed)  # 为了禁止hash随机化，使得实验可复现
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed) # if you are using multi-GPU.
+    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-

@@ -120,7 +120,13 @@ def lr_cluster_ce_hotspot_plot(lr_df: pd.DataFrame,
 
     clusters = ['cluster' + str(i) for i in np.unique(lr_df[cluster_col])]
 
-    for i, cluster_i in enumerate(clusters):
-        feature_plot(torch.stack(tmp_list), adata, feature_names=clusters,
-                     plot_feature=cluster_i,
-                     fname=cluster_i + '_' + fname, **kwargs)
+    if fname is None:
+        for i, cluster_i in enumerate(clusters):
+            feature_plot(torch.stack(tmp_list), adata, feature_names=clusters,
+                         plot_feature=cluster_i, **kwargs)
+
+    else:
+        for i, cluster_i in enumerate(clusters):
+            feature_plot(torch.stack(tmp_list), adata, feature_names=clusters,
+                         plot_feature=cluster_i,
+                         fname=cluster_i + '_' + fname, **kwargs)

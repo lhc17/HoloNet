@@ -155,6 +155,7 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
 
     """
     SR_network_list = []
+    cell_type_impact_list = []
     for i in tqdm(range(len(trained_MGC_model_list))):
         model = trained_MGC_model_list[i]
         if plot_lr == 'all':
@@ -172,8 +173,13 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
         row, col = np.diag_indices_from(SR_network)
         SR_network[row, col] = 0
         SR_network_list.append((SR_network - SR_network.min()) / (SR_network.max() - SR_network.min() + 1e-6))
+        cell_type_impact = cell_type_impact.detach().numpy()
+        cell_type_impact_list.append((cell_type_impact - cell_type_impact.min()) /
+                                     (cell_type_impact.max() - cell_type_impact.min() + 1e-6))
 
     SR_network = np.stack(SR_network_list).mean(0)
+    cell_type_impact = np.stack(cell_type_impact_list).mean(0)
+
     SR_network = (SR_network - SR_network.min()) / (SR_network.max() - SR_network.min() + 1e-6)
 
     cell_type_level_network(sr_network=SR_network,
@@ -182,7 +188,7 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
 
     SR_network = pd.DataFrame(SR_network, index=cell_type_names, columns=cell_type_names)
 
-    return SR_network
+    return SR_network, cell_type_impact
 
 
 def delta_e_proportion(trained_MGC_model_list: List[MGC_Model],
@@ -231,14 +237,14 @@ def delta_e_proportion(trained_MGC_model_list: List[MGC_Model],
 
     ce_list = []
     b_list = []
-      
+
     for i in tqdm(range(len(trained_MGC_model_list))):
         model = trained_MGC_model_list[i]
         x = model.mgc(adj.matmul(X))
         x = F.relu(x)
 
-        ce = x.matmul(model.linear.weight[:, :-X.shape[1]].T).sum(1)
-        b = X.matmul(model.linear.weight[:, -X.shape[1]:].T).sum(1)
+        ce = x.matmul(model.linear_ce.weight.T).sum(1)
+        b = X.matmul(model.linear_b.weight.T).sum(1)
 
         ce_list.append(ce)
         b_list.append(b)
@@ -254,10 +260,11 @@ def delta_e_proportion(trained_MGC_model_list: List[MGC_Model],
     sns.barplot(x='cell_type', y='delta_e_proportion', data=tmp_df, palette=palette, **kwargs)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')
 
+    proportion_range = tmp_df['delta_e_proportion'].max() - tmp_df['delta_e_proportion'].min()
     if low_ylim is None:
-        low_ylim = max(round(tmp_df['delta_e_proportion'].min() * 20) / 20 - 0.11, 0)
+        low_ylim = max(round(tmp_df['delta_e_proportion'].min() * 20) / 20 - proportion_range / 2, 0)
     if high_ylim is None:
-        high_ylim = max(round(tmp_df['delta_e_proportion'].max() * 20) / 20 + 0.11, 1)
+        high_ylim = min(round(tmp_df['delta_e_proportion'].max() * 20) / 20 + proportion_range / 2, 1)
     ax.set(ylim=(low_ylim, high_ylim))
 
     if fname is not None:

@@ -3,7 +3,7 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from tqdm import tqdm
 
 from .CE_network_edge_weighting import distinguish_dist_factor_calculate

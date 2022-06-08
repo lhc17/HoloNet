@@ -151,6 +151,7 @@ def single_view_mgc_coef_plot(lr_df: pd.DataFrame,
                               red_line: Optional[float] = None,
                               yellow_line: Optional[float] = None,
                               green_line: Optional[float] = None,
+                              plot_lr_list: Optional[List[str]] = None,
                               fname: Optional[Union[str, Path]] = None,
                               ) -> pd.DataFrame:
     """
@@ -162,6 +163,7 @@ def single_view_mgc_coef_plot(lr_df: pd.DataFrame,
     red_line :
     yellow_line :
     green_line :
+    plot_lr_list :
     fname :
 
     Returns
@@ -171,13 +173,13 @@ def single_view_mgc_coef_plot(lr_df: pd.DataFrame,
 
     lr_df_tmp = lr_df.copy()
     lr_df_tmp['coef'] = CCI_coef_list
-    lr_df_tmp = lr_df_tmp.sort_values('coef', ascending=False)
+    lr_df_tmp = lr_df_tmp.sort_values('coef', ascending=True).reset_index()
 
     max_value, min_value = np.stack(CCI_coef_list).max(), np.stack(CCI_coef_list).min()
 
     plt.figure(figsize=(5, 4))
     plt.scatter([i for i in range(lr_df_tmp.shape[0])],
-                lr_df_tmp.sort_values('coef', ascending=False).coef[::-1],
+                lr_df_tmp['coef'],
                 s=8)
 
     if red_line is not None:
@@ -193,6 +195,15 @@ def single_view_mgc_coef_plot(lr_df: pd.DataFrame,
         max_value, min_value = max(max_value, green_line), min(min_value, green_line)
 
     plt.ylim(min_value - 0.05, max_value + 0.05)
+
+    if plot_lr_list is not None:
+        for target_lr in plot_lr_list:
+            target_lr_id = list(lr_df_tmp['LR_Pair']).index(target_lr)
+            plt.annotate(r'{}'.format(target_lr),
+                         xy=(target_lr_id,
+                             lr_df_tmp.iloc[target_lr_id]['coef']), xycoords='data',
+                         xytext=(-40, +50), textcoords='offset points', fontsize=8,
+                         arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-.2"))
 
     if fname is not None:
         plt.savefig(fname)

@@ -61,21 +61,24 @@ class MGC_Model(nn.Module):
         self.only_cell_type = only_cell_type
 
         if self.only_cell_type:
-            self.linear = nn.Linear(feature_num, target_num)
+            self.linear_b = nn.Linear(feature_num, target_num)
         else:
             self.mgc = MultiGraphConvolution_Layer(in_features=feature_num, out_features=hidden_num,
                                                    support_num=support_num, )
-            self.linear = nn.Linear(feature_num + hidden_num, target_num)
+            self.linear_b = nn.Linear(feature_num, target_num, bias=False)
+            self.linear_ce = nn.Linear(hidden_num, target_num, bias=False)
 
     def forward(self, input_x, adj_matmul_input_x):
 
         if self.only_cell_type:
-            x = self.linear(input_x)
+            x = self.linear_b(input_x)
         else:
             x = self.mgc(adj_matmul_input_x)
             x = F.relu(x)
-            x = torch.hstack((x, input_x))
-            x = self.linear(x)
+
+            x_b = self.linear_b(x)
+            x_ce = self.linear_ce(input_x)
+            x = x_b + x_ce
 
         x = torch.sigmoid(x)
         return x
