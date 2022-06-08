@@ -8,11 +8,11 @@ requires = [
 build-backend = 'flit_core.buildapi'
 
 [tool.flit.metadata]
-module = 'infercnvpy'
-author = 'Gregor Sturm'
-author-email = 'gregor.sturm@i-med.ac.at'
-home-page = 'https://github.com/icbi-lab/infercnvpy'
-description-file = "README.rst"
+module = 'HoloNet'
+author = 'Li Haochen'
+author-email = 'lhc17@mails.tsinghua.edu.cn'
+home-page = 'https://github.com/lhc17/HoloNet/'
+description-file = "README.md"
 classifiers = [
     'License :: OSI Approved :: BSD License',
     'Development Status :: 4 - Beta',
@@ -22,28 +22,22 @@ classifiers = [
 ]
 requires-python = '>= 3.8'
 requires = [
-    'anndata>=0.7.3',
-    'scanpy>=1.6.0',
-    'pandas>=1',
-    'numpy>=1.20', # includes type annotations
-    'tqdm>=4.42.0', # required for process_map
-    # for getting the version
+    'numpy',
+    'torch',
+    'pandas',
+    'anndata',
+    'tqdm',
     'setuptools_scm',
     'pytoml',
-    'gtfparse>=1.2.1',
-    'pycairo>=1.20; sys_platform == "win32"',
-    'leidenalg',
-    'pyreadr'
+    'scipy',
+    'scikit-learn',
+    'scanpy',
+    'networkx',
+    'matplotlib',
+    'seaborn',
 ]
 
 [tool.flit.metadata.requires-extra]
-copykat = [
-    'rpy2'
-]
-test = [
-    'pytest',
-    'black',
-    'pre-commit',
 ]
 doc = [
     'sphinx>=4.2',
@@ -60,12 +54,7 @@ doc = [
 ]
 
 [tool.flit.metadata.urls]
-Documentation = 'https://icbi-lab.github.io/infercnvpy/'
-
-[tool.pytest.ini_options]
-minversion = 6.0
-testpaths = 'infercnvpy/tests'
-norecursedirs = [ '.*', 'build', 'dist', '*.egg', 'data', '__pycache__']
+Documentation = 'https://holonet-doc.readthedocs.io/en/latest/'
 
 [tool.setuptools_scm]
 git_describe_command = "git describe --dirty --tags --long --match v*.*.*"
