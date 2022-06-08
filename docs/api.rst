@@ -49,7 +49,6 @@ Preprocessing: `pr`
 .. autosummary::
    :toctree: ./generated
 
-   MGC_Model
    mgc_repeat_training
    get_mgc_result
    mgc_training_with_single_view
