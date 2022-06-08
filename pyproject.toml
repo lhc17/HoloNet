@@ -60,6 +60,7 @@ doc = [
     'jupyter_client',
     'ipykernel',
     'myst-parser',
+    'pynvml',
 ]
 
 [tool.flit.metadata.urls]
