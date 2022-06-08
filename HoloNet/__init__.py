@@ -6,3 +6,5 @@ from . import preprocessing as pp
 from . import tools as tl
 from ._setting import *
 from .colorSchemes import *
+
+from ._metadata import __version__, __author__, __email__, within_flit
