@@ -19,6 +19,7 @@ Cell–cell communication events (CEs) mediated by multiple ligand–receptor pa
 Installation
 ^^^^^^^^^^^^
 Install the latest release of `infercnvpy` from `PyPI <https://pypi.org/project/infercnvpy/>`_:
+
 .. code-block::
         
         pip install HoloNet
@@ -26,6 +27,7 @@ Install the latest release of `infercnvpy` from `PyPI <https://pypi.org/project/
 Getting started
 ^^^^^^^^^^^^^^^
 Please refer to the `Documentation <https://holonet-doc.readthedocs.io/en/latest/>`_, including:
+
 - `Documentation <https://holonet-doc.readthedocs.io/en/latest/>`_
 
 
