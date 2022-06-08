@@ -1,3 +1,5 @@
+Tutorial
+==========
 
 .. code:: ipython3
 
@@ -16,7 +18,7 @@
     sc.settings.figdir = './figure/'
 
 Load data
-=========
+---------
 
 .. code:: ipython3
 
@@ -98,7 +100,7 @@ Load data
 
 
 Construct CE network
-====================
+---------
 
 .. code:: ipython3
 
@@ -123,7 +125,7 @@ Construct CE network
 
 
 Visualize CE network
-====================
+---------
 
 .. code:: ipython3
 
@@ -166,7 +168,7 @@ Visualize CE network
 
 
 Predict target gene expression with GNN
-=======================================
+---------
 
 .. code:: ipython3
 
@@ -210,7 +212,7 @@ Predict target gene expression with GNN
 
 
 Visualize FCE network
-=====================
+---------
 
 .. code:: ipython3
 
@@ -255,7 +257,7 @@ Visualize FCE network
 
 
 Identify genes affected more by CCI
-===================================
+--------------------------------
 
 .. code:: ipython3
 
