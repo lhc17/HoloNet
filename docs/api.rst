@@ -1,15 +1,26 @@
 API
-======
+===
 
-Preprocessing:
------
+Import infercnvpy together with scanpy as
 
-.. automodule:: HoloNet
+.. code-block:: python
 
-   :members: pp
+   import scanpy as sc
+   import HoloNet as hn
 
+For consistency, the infercnvpy API tries to follow the `scanpy API <https://scanpy.readthedocs.io/en/stable/api/index.html>`__
+as closely as possible.
 
-Test:
------
+.. _api-io:
 
-.. autofunction:: HoloNet.pl.find_genes_linked_to_ce
+Preprocessing: `pp`
+------------------
+
+.. module:: HoloNet.pp
+
+.. autosummary::
+   :toctree: ./generated
+
+   get_expressed_lr_df
+   read_visium
+   
