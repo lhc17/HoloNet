@@ -1,15 +1,20 @@
 References
 =============
 
-.. [Amid19] Amid & Warmuth (2019),
-   *TriMap: Large-scale Dimensionality Reduction Using Triplets*,
-   `arXiv <https://arxiv.org/abs/1910.00204>`__.
 
-.. [Amir13] Amir *et al.* (2013),
-   *viSNE enables visualization of high dimensional single-cell data and reveals phenotypic heterogeneity of leukemia*,
-   `Nature Biotechnology <https://doi.org/10.1038/nbt.2594>`__.
+.. [Paszke19] Paszke *et al.* (2019),
+   *PyTorch: An imperative style, high-performance deep learning library*,
+   `Advances in Neural Information Processing Systems <https://papers.nips.cc/paper/2019/hash/bdbca288fee7f92f2bfa9f7012727740-Abstract.html>`__.
 
-.. [Angerer16] Angerer *et al.* (2016),
-   *destiny – diffusion maps for large-scale single-cell data in R*,
-   `Bioinformatics <https://doi.org/10.1093/bioinformatics/btv715>`__.
+.. [Pedregosa11] Pedregosa (2011),
+   *Scikit-learn: Machine learning in Python*,
+   `J. Mach. Learn. Res. <https://dl.acm.org/doi/10.5555/1953048.2078195>`__.
+   
+.. [Pham20] Pham *et al.* (2020),
+   *stLearn: integrating spatial location, tissue morphology and gene expression to find cell types, cell-cell interactions and spatial trajectories within undissociated tissues*,
+   `bioRxiv <https://doi.org/10.1101/2020.05.31.125658>`__.
 
+.. [Wolf18] Wolf *et al.* (2018),
+   *SCANPY: Large-scale single-cell gene expression data analysis.*,
+   `Genome Biol <https://doi.org/10.1186/s13059-017-1382-0>`__.
+ 
