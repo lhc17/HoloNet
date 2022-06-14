@@ -181,6 +181,3 @@ Plots for selecting parameters
    select_w
    
    
-  
- 
- 
