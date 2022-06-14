@@ -23,7 +23,6 @@ Extract and filter the ligand-receptor pair dataframe
    :toctree: ./generated
 
    get_expressed_lr_df
-   read_visium
    
    
    
@@ -65,13 +64,12 @@ Clustering lr pairs
    cluster_lr_based_on_ce
 
 
-Other functions
+Selecting parameters
 ^^^^^^^^
 
 .. autosummary::
    :toctree: ./generated
    
-   dist_factor_calculate
    default_w_visium
 
    
@@ -80,22 +78,41 @@ Predicting: `pr`
 
 .. module:: HoloNet.predicting
 
+
+Preparing the inputs of the graph neural network
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated
+
+   get_continuous_cell_type_tensor
+   get_one_hot_cell_type_tensor
+   get_gene_expr
+   get_one_case_expr
+   adj_normalize
+   
+   
+Training the graph neural network
+^^^^^^^^
+
 .. autosummary::
    :toctree: ./generated
 
    mgc_repeat_training
    get_mgc_result
-   mgc_training_with_single_view
    mgc_training_for_multiple_targets
    get_mgc_result_for_multiple_targets
-   adj_normalize
-   train_test_mask
-   get_continuous_cell_type_tensor
-   get_one_hot_cell_type_tensor
+   
+   
+Model saving and loading
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated   
+   
    save_model_list
    load_model_list
-   get_gene_expr
-   get_one_case_expr
+   
 
 
 Plotting: `pl`
@@ -103,24 +120,67 @@ Plotting: `pl`
 
 .. module:: HoloNet.plotting
 
+Base plotting methods
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated
+   
+   feature_plot
+   cell_type_level_network
+
+
+Plots for spatial datasets
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated
+   
+   plot_cell_type_proportion
+
+
+Plotting CEs
+^^^^^^^^
+
 .. autosummary::
    :toctree: ./generated
 
    ce_hotspot_plot
    ce_cell_type_network_plot
+   lr_umap
+   lr_cluster_ce_hotspot_plot
+ 
+ 
+Plotting FCEs by interpreting the graph neural network
+^^^^^^^^
+
+.. autosummary::
+   :toctree: ./generated
+   
    lr_rank_in_mgc
    fce_cell_type_network_plot
    delta_e_proportion
-   save_mgc_interpretation_for_all_target
    plot_mgc_result
+   
+   
+Plots for identifying genes more affected by cell–cell communication
+^^^^^^^^   
+
+.. autosummary::
+   :toctree: ./generated
+   
    find_genes_linked_to_ce
-   single_view_mgc_coef_plot
-   feature_plot
-   cell_type_level_network
-   plot_cell_type_proportion
+   
+   
+Plots for selecting parameters
+^^^^^^^^   
+
+.. autosummary::
+   :toctree: ./generated
+   
    select_w
-   lr_cluster_ce_hotspot_plot
-   lr_umap
+   
+   
   
  
  
