@@ -1,4 +1,4 @@
-Tutorial 1
+CE visualization
 ============
 
 .. code:: ipython3
