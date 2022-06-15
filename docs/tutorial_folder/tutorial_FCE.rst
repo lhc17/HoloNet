@@ -1,5 +1,3 @@
-FCE visualization
-============
 
 .. code:: ipython3
 
