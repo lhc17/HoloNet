@@ -21,7 +21,9 @@ Extract and filter the ligand-receptor pair dataframe
 
 .. autosummary::
    :toctree: ./generated
-
+   
+   load_brca_visium_10x
+   load_lr_df
    get_expressed_lr_df
    
    
