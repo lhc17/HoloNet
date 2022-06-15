@@ -1,6 +1,3 @@
-CE visualization
-=================
-
 
 .. code:: ipython3
 
@@ -123,7 +120,8 @@ CE visualization
 
 .. parsed-literal::
 
-      9%|▉         | 27/286 [03:11<29:53,  6.93s/it]
+    100%|██████████| 286/286 [35:28<00:00,  7.44s/it]
+
 
 .. code:: ipython3
 

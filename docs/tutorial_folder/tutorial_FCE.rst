@@ -1,6 +1,3 @@
-FCE visualization
-====================
-
 
 .. code:: ipython3
 
@@ -26,64 +23,6 @@ FCE visualization
 
     LR_df = hn.pp.load_lr_df()
     expressed_LR_df = hn.pp.get_expressed_lr_df(LR_df, adata, expressed_proportion=0.3)
-    expressed_LR_df.head(3)
-
-
-
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Ligand_gene_symbol</th>
-          <th>Receptor_gene_symbol</th>
-          <th>Ligand_location</th>
-          <th>LR_Pair</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>A2M</td>
-          <td>LRP1</td>
-          <td>secreted</td>
-          <td>A2M:LRP1</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>ADAM15</td>
-          <td>ITGA5</td>
-          <td>plasma membrane</td>
-          <td>ADAM15:ITGA5</td>
-        </tr>
-        <tr>
-          <th>2</th>
-          <td>ADAM15</td>
-          <td>ITGAV</td>
-          <td>plasma membrane</td>
-          <td>ADAM15:ITGAV</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
 
 .. code:: ipython3
 
@@ -95,7 +34,8 @@ FCE visualization
 
 .. parsed-literal::
 
-     17%|█▋        | 50/286 [06:14<27:28,  6.98s/it]
+    100%|██████████| 286/286 [33:06<00:00,  6.95s/it]
+
 
 .. code:: ipython3
 
@@ -124,8 +64,8 @@ FCE visualization
 
 .. parsed-literal::
 
-    100%|██████████| 50/50 [01:44<00:00,  2.09s/it]
-    100%|██████████| 50/50 [00:00<00:00, 96.14it/s]
+    100%|██████████| 50/50 [01:47<00:00,  2.15s/it]
+    100%|██████████| 50/50 [00:00<00:00, 102.85it/s]
 
 
 
@@ -159,7 +99,7 @@ FCE visualization
 
 .. parsed-literal::
 
-    100%|██████████| 50/50 [00:15<00:00,  3.28it/s]
+    100%|██████████| 50/50 [00:23<00:00,  2.11it/s]
 
 
 
@@ -175,7 +115,7 @@ FCE visualization
 
 .. parsed-literal::
 
-    100%|██████████| 50/50 [00:00<00:00, 620.49it/s]
+    100%|██████████| 50/50 [00:00<00:00, 445.78it/s]
 
 
 
@@ -190,7 +130,8 @@ FCE visualization
 
 .. parsed-literal::
 
-      1%|          | 4/567 [01:00<2:18:47, 14.79s/it]
+    100%|██████████| 567/567 [2:27:20<00:00, 15.59s/it]  
+
 
 .. code:: ipython3
 
@@ -200,6 +141,13 @@ FCE visualization
     predicted_expr_only_type_df = hn.pr.get_mgc_result_for_multiple_targets(trained_MGC_model_only_type_list, 
                                                                             X, adj,
                                                                             used_gene_list, adata)
+
+
+.. parsed-literal::
+
+    100%|██████████| 567/567 [03:32<00:00,  2.67it/s]
+    100%|██████████| 567/567 [02:50<00:00,  3.33it/s]
+
 
 .. code:: ipython3
 
@@ -368,6 +316,13 @@ FCE visualization
     predicted_expr_only_type_df_tmp = hn.pr.get_mgc_result_for_multiple_targets(trained_MGC_model_only_type_list_tmp, 
                                                                             X, adj,
                                                                             used_genes, adata)
+
+
+.. parsed-literal::
+
+    100%|██████████| 567/567 [03:34<00:00,  2.64it/s]
+    100%|██████████| 567/567 [02:49<00:00,  3.35it/s]
+
 
 .. code:: ipython3
 
