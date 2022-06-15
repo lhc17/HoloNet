@@ -11,7 +11,7 @@ Import HoloNet as
 .. _api-io:
 
 Preprocessing: `pp`
-------------------
+-------------------------
 
 Import spatial transcriptomic data into :class:`~anndata.AnnData`.
 Extract and filter the ligand-receptor pair dataframe
@@ -38,7 +38,7 @@ Some tool functions.
 
 
 Constructing multi-view CE network
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -48,7 +48,7 @@ Constructing multi-view CE network
    
 
 Computing centralities
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -58,7 +58,7 @@ Computing centralities
    
    
 Clustering lr pairs
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -67,7 +67,7 @@ Clustering lr pairs
 
 
 Selecting parameters
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -82,7 +82,7 @@ Predicting: `pr`
 
 
 Preparing the inputs of the graph neural network
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -95,7 +95,7 @@ Preparing the inputs of the graph neural network
    
    
 Training the graph neural network
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -107,7 +107,7 @@ Training the graph neural network
    
    
 Model saving and loading
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated   
@@ -123,7 +123,7 @@ Plotting: `pl`
 .. module:: HoloNet.plotting
 
 Base plotting methods
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -133,7 +133,7 @@ Base plotting methods
 
 
 Plots for spatial datasets
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -142,7 +142,7 @@ Plots for spatial datasets
 
 
 Plotting CEs
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -154,7 +154,7 @@ Plotting CEs
  
  
 Plotting FCEs by interpreting the graph neural network
-^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -166,7 +166,7 @@ Plotting FCEs by interpreting the graph neural network
    
    
 Plots for identifying genes more affected by cell–cell communication
-^^^^^^^^   
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
@@ -175,7 +175,7 @@ Plots for identifying genes more affected by cell–cell communication
    
    
 Plots for selecting parameters
-^^^^^^^^   
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^     
 
 .. autosummary::
    :toctree: ./generated
