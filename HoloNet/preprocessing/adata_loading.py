@@ -13,6 +13,7 @@ def load_brca_visium_10x() -> AnnData:
     """\
     
     Load the example dataset
+    
     From the 10x Genomics website (https://www.10xgenomics.com/resources/datasets)
     From fresh frozen Invasive Ductal Carcinoma breast tissue (Block A Section 1)
     Profiled the expression of 24,923 genes in 3,798 spots
