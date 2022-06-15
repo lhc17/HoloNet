@@ -53,6 +53,7 @@ napoleon_use_param = True
 napoleon_use_ivar = True
 napoleon_custom_sections = [("Params", "Parameters")]
 todo_include_todos = False
+nbsphinx_allow_errors = True
 
 intersphinx_mapping = dict(
     scanpy=("https://scanpy.readthedocs.io/en/stable/", None),
