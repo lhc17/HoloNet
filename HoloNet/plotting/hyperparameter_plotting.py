@@ -53,7 +53,7 @@ def select_w(adata: AnnData,
     display_pos = np.where(tmp == tmp.max())[0][0].astype('str')
 
     if data_type == 'Visium':
-        sc.pl.spatial(dist_factor_adata, color=[display_pos], size=size, cmap=cmap, alpha=alpha,
+        sc.pl.spatial(dist_factor_adata, color=[display_pos], size=size, cmap=cmap, alpha=alpha, title='',
                       save=fname, **kwargs)
     if data_type == 'SeqFISH':
         sc.pl.embedding(dist_factor_adata, basis="spatial", color=[display_pos], size=size, **kwargs)
