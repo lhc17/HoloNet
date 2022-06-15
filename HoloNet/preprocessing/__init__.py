@@ -5,7 +5,7 @@ from .lr_database_preprocessing import get_expressed_lr_df
 
 """Example datasets"""
 
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from scanpy import settings
 from scanpy.readwrite import read
 import pandas as pd
