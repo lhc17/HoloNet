@@ -6,8 +6,7 @@ from .lr_database_preprocessing import get_expressed_lr_df
 """Example datasets"""
 
 from anndata._core.anndata import AnnData
-from scanpy import settings
-from scanpy.readwrite import read
+import scanpy as sc
 import pandas as pd
 
 
@@ -34,8 +33,8 @@ def load_brca_visium_10x() -> AnnData:
     """
     
     url = "https://cloud.tsinghua.edu.cn/f/dd941f0d12214e6583bb/?dl=1"
-    filename = settings.datasetdir / "BRCA_Visium_10x_tmp.h5ad"
-    adata = read(filename, backup_url=url)
+    filename = sc.settings.datasetdir / "BRCA_Visium_10x_tmp.h5ad"
+    adata = sc.read(filename, backup_url=url)
     return adata
 
 
