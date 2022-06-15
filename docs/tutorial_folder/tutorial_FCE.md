@@ -18,18 +18,13 @@ sc.settings.figdir = './figures/'
 
 
 ```python
-adata = sc.read_h5ad('./data/BRCA_Visium_10x_0607.h5ad')
+adata = hn.pp.load_brca_visium_10x()
 ```
 
 
 ```python
-LR_pair_database_PATH = os.path.join('./data/ConnectomeDB2020.csv')
-
-connectomeDB = pd.read_csv(LR_pair_database_PATH,encoding='Windows-1252')
-used_connectomeDB = connectomeDB.loc[:,['Ligand gene symbol','Receptor gene symbol','Ligand location']]
-used_connectomeDB.columns = ['Ligand_gene_symbol','Receptor_gene_symbol','Ligand_location']
-
-expressed_LR_df = hn.pp.get_expressed_lr_df(used_connectomeDB,adata,expressed_proportion=0.3)
+LR_df = hn.pp.load_lr_df()
+expressed_LR_df = hn.pp.get_expressed_lr_df(LR_df, adata, expressed_proportion=0.3)
 expressed_LR_df.head(3)
 ```
 
@@ -96,8 +91,7 @@ CE_tensor_filtered = hn.tl.filter_ce_tensor(CE_tensor, adata,
                                             lr_df=expressed_LR_df, w_best=w_best)
 ```
 
-    100%|██████████| 286/286 [36:21<00:00,  7.63s/it]
-
+     17%|█▋        | 50/286 [06:14<27:28,  6.98s/it]
 
 
 ```python
