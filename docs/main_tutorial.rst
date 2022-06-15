@@ -3,7 +3,7 @@ Tutorials
 
 
 Tutorial 1
-============
+^^^^^^^^^^^
 
 .. code:: ipython3
 
