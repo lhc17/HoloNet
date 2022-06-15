@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 import numpy as np
 import scanpy as sc
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from matplotlib.colors import Colormap
 
 from ..tools.CE_network_edge_weighting import dist_factor_calculate

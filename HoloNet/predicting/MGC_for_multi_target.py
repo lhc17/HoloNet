@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import pandas as pd
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from tqdm import tqdm
 
 from .MGC_model import MGC_Model

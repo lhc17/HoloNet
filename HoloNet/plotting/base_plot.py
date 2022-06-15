@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from matplotlib.colors import Colormap
 
 

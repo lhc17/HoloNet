@@ -1,5 +1,5 @@
 import numpy as np
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from scipy.spatial.distance import squareform, pdist
 
 

@@ -3,7 +3,7 @@ from typing import Tuple, List, Optional
 import numpy as np
 import pandas as pd
 import torch
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 from scipy.spatial.distance import pdist, squareform
 from sklearn.preprocessing import LabelBinarizer
 

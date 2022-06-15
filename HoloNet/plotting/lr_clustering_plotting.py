@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import torch
 import umap
-from anndata import AnnData
+from anndata._core.anndata import AnnData
 
 from .base_plot import feature_plot
 from ..colorSchemes import color_sheet
