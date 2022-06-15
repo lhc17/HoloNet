@@ -1,6 +1,31 @@
 import numpy as np
 import pandas as pd
 from anndata._core.anndata import AnnData
+import os
+
+
+
+def load_lr_df() -> pd.DataFrame:
+    """\
+    Load the provided dataframe with the information on ligands and receptors.
+    
+    Returns
+    -------
+    The LR-gene dataframe.
+    
+    """
+    LR_pair_database_path = './data/ConnectomeDB2020.csv'
+    if os.path.exists(LR_pair_database_path):
+        connectomeDB = pd.read_csv(LR_pair_database_path,encoding='Windows-1252')
+    else:
+        LR_pair_database_url = 'https://cloud.tsinghua.edu.cn/f/bb1080f2c5ba49cd815b/?dl=1'
+        connectomeDB = pd.read_csv(LR_pair_database_url, encoding='Windows-1252')
+        
+    used_connectomeDB = connectomeDB.loc[:,['Ligand gene symbol','Receptor gene symbol','Ligand location']]
+    used_connectomeDB.columns = ['Ligand_gene_symbol','Receptor_gene_symbol','Ligand_location']
+    
+    return used_connectomeDB
+
 
 
 def get_expressed_lr_df(lr_df: pd.DataFrame,
