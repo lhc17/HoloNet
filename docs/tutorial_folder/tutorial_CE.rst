@@ -1,3 +1,5 @@
+CE visualization
+==================
 
 .. code:: ipython3
 
