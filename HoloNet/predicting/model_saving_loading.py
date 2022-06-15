@@ -28,13 +28,18 @@ def save_model_list(trained_MGC_model_list: List[MGC_Model],
 
     """
 
-    for target_gene_name in target_gene_name_list:
+    for gene_i, target_gene_name in enumerate(target_gene_name_list):
         model_save_dir = os.path.join(model_save_folder, project_name, target_gene_name)
         if not os.path.exists(model_save_dir):
             os.makedirs(model_save_dir)
-
-        for i, model in enumerate(trained_MGC_model_list):
-            model_save_path = os.path.join(model_save_dir, str(i) + 'th_trained_MGC_model.pt')
+        
+        if len(target_gene_name_list) != 1:
+            trained_MGC_model_list_i = trained_MGC_model_list[gene_i]
+        else:
+            trained_MGC_model_list_i = trained_MGC_model_list
+            
+        for model_i, model in enumerate(trained_MGC_model_list_i):
+            model_save_path = os.path.join(model_save_dir, str(model_i) + 'th_trained_MGC_model.pt')
             torch.save(model.state_dict(), model_save_path)
 
 

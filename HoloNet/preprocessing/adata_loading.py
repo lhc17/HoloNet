@@ -4,7 +4,7 @@ from typing import Union, Optional
 
 import pandas as pd
 import scanpy as sc
-from anndata._core.anndata import AnnData
+from anndata import AnnData
 from matplotlib.image import imread
 
 

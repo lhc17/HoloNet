@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, List
 import numpy as np
 import pandas as pd
 import torch
-from anndata._core.anndata import AnnData
+from anndata import AnnData
 from tqdm import tqdm
 
 

@@ -7,7 +7,6 @@ here = Path(__file__).parent
 try:
     from setuptools_scm import get_version
     import pytoml
-
     proj = pytoml.loads((here.parent / "pyproject.toml").read_text())
     metadata = proj["tool"]["flit"]["metadata"]
 

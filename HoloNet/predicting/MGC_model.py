@@ -65,8 +65,8 @@ class MGC_Model(nn.Module):
         else:
             self.mgc = MultiGraphConvolution_Layer(in_features=feature_num, out_features=hidden_num,
                                                    support_num=support_num, )
-            self.linear_b = nn.Linear(feature_num, target_num, bias=False)
-            self.linear_ce = nn.Linear(hidden_num, target_num, bias=False)
+            self.linear_b = nn.Linear(feature_num, target_num)
+            self.linear_ce = nn.Linear(hidden_num, target_num)
 
     def forward(self, input_x, adj_matmul_input_x):
 
@@ -76,8 +76,8 @@ class MGC_Model(nn.Module):
             x = self.mgc(adj_matmul_input_x)
             x = F.relu(x)
             
-            x_b = self.linear_b(x)
-            x_ce = self.linear_ce(input_x)
+            x_ce = self.linear_ce(x)
+            x_b = self.linear_b(input_x)
             x = x_b + x_ce
             
         x = torch.sigmoid(x)

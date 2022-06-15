@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 import numpy as np
 import scanpy as sc
-from anndata._core.anndata import AnnData
+from anndata import AnnData
 from matplotlib.colors import Colormap
 
 from ..tools.CE_network_edge_weighting import dist_factor_calculate
@@ -19,6 +19,8 @@ def select_w(adata: AnnData,
              **kwargs,
              ):
     """
+    
+    Plot the covering spatial region of ligands derived from one spot.
 
     Parameters
     ----------

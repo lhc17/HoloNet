@@ -2,7 +2,7 @@ from typing import Optional
 
 import pandas as pd
 import torch
-from anndata._core.anndata import AnnData
+from anndata import AnnData
 from sklearn.cluster import AgglomerativeClustering
 from tqdm import tqdm
 

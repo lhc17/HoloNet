@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import torch
 import umap
-from anndata._core.anndata import AnnData
+from anndata import AnnData
 
 from .base_plot import feature_plot
 from ..colorSchemes import color_sheet
@@ -99,18 +99,25 @@ def lr_cluster_ce_hotspot_plot(lr_df: pd.DataFrame,
                                **kwargs,
                                ):
     """
-
+    
+    Plot the general CE hotspot of each ligand-receptor group.
+    Clustering results need to be provided in 'cluster_col' of lr_df.
+    
     Parameters
     ----------
     lr_df :
+        A preprocessed LR-gene dataframe, must contain the columns 'LR_pair' and clustering results.
     cell_cci_centrality :
+        A tensor (LR_num * cell_num) for the  centrality of each cell according to each LR pair.
     adata :
+        Annotated data matrix.
     cluster_col :
+        The columns in lr_df dataframe storing the clustering results of each LR pair.
     fname :
+        The output file name. If None, not save the figure.
     kwargs :
-
-    Returns
-    -------
+        Other paramters in 'feature_plot' function.
+        
 
     """
     tmp_list = []

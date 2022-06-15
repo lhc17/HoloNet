@@ -201,6 +201,8 @@ def get_mgc_result(trained_MGC_model_list: List[MGC_Model],
 def mgc_training_with_single_view(X: torch.Tensor,
                                   adj: torch.Tensor,
                                   target: torch.Tensor,
+                                  device: str = 'cpu',
+                                  repeat_num: int = 5,
                                   **kwargs,
                                   ) -> List[float]:
     """
@@ -216,11 +218,13 @@ def mgc_training_with_single_view(X: torch.Tensor,
     -------
 
     """
-
+    
+    device = get_device(device)
     coef_list = []
     for i in tqdm(range(adj.shape[0])):
         trained_MGC_model_list_tmp = mgc_repeat_training(X, adj[i].unsqueeze(0), target,
-                                                         hide_repeat_tqdm=True, **kwargs)
+                                                         hide_repeat_tqdm=True, device=device, 
+                                                         repeat_num=repeat_num, **kwargs)
         tmp = get_mgc_result(trained_MGC_model_list_tmp, X, adj[i].unsqueeze(0),
                              hide_repeat_tqdm=True)
         coef_list.append(np.corrcoef(tmp.squeeze(1).T, target.T)[0, 1])
