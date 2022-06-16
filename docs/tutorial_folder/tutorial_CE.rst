@@ -4,23 +4,24 @@ Cell-cell communication analysis and visualization
 In this tutorial, we demonstrate how HoloNet can be used to analyze and visualize cell-cell communication
 in spatial transcriptomics data.
 
+
+HoloNet needs three inputs:
+
+1. Spatial transcriptomic data (with gene expression matrix and spatial information).
+    - In this version of HoloNet, we support the spatial data based on :class:`~anndata.AnnData` loaded from Scanpy.
+#. Cell-type information.
+    - Cell-type percentages from deconvolution methods prefer to be saved in ``adata.obsm['predicted_cell_type']``.
+    - Categorical cell-type labels prefer to be saved in ``adata.obs['cell_type']``.
+#. Database with pairwise ligand and receptor genes.
+    - A pandas dataframe, must contain two columns: 'Ligand_gene_symbol' and 'Receptor_gene_symbol'.
+
 .. note::
-    HoloNet needs three inputs:
+    The tutorial mainly follows these steps:
 
-    1. Spatial transcriptomic data (with gene expression matrix and spatial information).
-        - In this version of HoloNet, we support the spatial data based on :class:`~anndata.AnnData` loaded from Scanpy.
-    #. Cell-type information.
-        - Cell-type percentages from deconvolution methods prefer to be saved in ``adata.obsm['predicted_cell_type']``.
-        - Categorical cell-type labels prefer to be saved in ``adata.obs['cell_type']``.
-    #. Database with pairwise ligand and receptor genes.
-        - A pandas dataframe, must contain two columns: 'Ligand_gene_symbol' and 'Receptor_gene_symbol'.
-
-The tutorial mainly follows these steps:
-
-1. Load spatial transcriptomic data.
-#. Construct multi-view communication network among single cells (each LR pair corresponds to one view).
-#. Visualize communication based on the multi-view network.
-#. Other analysis methods (such as clustering LR pairs).
+    1. Load spatial transcriptomic data.
+    #. Construct multi-view communication event (CE) network among single cells (each LR pair corresponds to one view).
+    #. Visualize communication based on the multi-view network.
+    #. Other analysis methods (such as clustering LR pairs).
 
 .. code:: python
 
@@ -39,7 +40,7 @@ The tutorial mainly follows these steps:
     sc.settings.figdir = './figures/'
 
 
-Loading the example dataset
+Data loading
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We prepare a example breast cancer dataset for users from the 10x Genomics website.
@@ -69,7 +70,7 @@ The cell-type label of each spot (the cell-type with maximum percentage in the s
 .. image:: tutorial_CE_files/tutorial_CE_2_0.png
 
 
-We prepare a database with pairwise ligand and receptor genes for users.
+We provide a database with pairwise ligand and receptor genes for users.
 Load the database and filter the LR pairs, requiring both ligand and receptor genes to be expressed
 in a certain percentage of cells (or spots).
 
@@ -133,10 +134,12 @@ in a certain percentage of cells (or spots).
     </div>
 
 
-Constructing multi-view communication network
+
+Constructing multi-view CE network
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Ligand molecules from a single source can only cover a certain region.
+
 Before constructing multi-view communication network, we need to calculate the ``w_best`` to decide the region ('how far is far').
 
 .. code:: python
@@ -144,17 +147,11 @@ Before constructing multi-view communication network, we need to calculate the `
     w_best = hn.tl.default_w_visium(adata)
     hn.pl.select_w(adata, w_best=w_best)
 
-
-
 .. image:: tutorial_CE_files/tutorial_CE_5_0.png
 
-.. note::
-   Though we highly recommend using BRIE v2 for a coherent way for splicing
-   phenotype selection, `BRIE1 CLI`_ (MCMC based & gene feature only)
-   is still available but the CLIs are changed to `brie1` and `brie1-diff`.
+Based on ``w_best``, we can build up the multi-view communication network.
 
-
-
+We calculate the edge weights of the multi-view communication network, then filter the edges with low specificities.
 
 .. code:: python
 
@@ -165,14 +162,27 @@ Before constructing multi-view communication network, we need to calculate the `
 
     100%|██████████| 286/286 [35:28<00:00,  7.44s/it]
 
+.. note::
+    This step will consume a lot of memory.
+    If you run out of memory, you can choose to only compute communication networks with fewer ligand-receptor pairs.
+    We are working on a new version to solve this problem.
 
 
+Visualizing CEs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Based on the multi-view CE network, we provide two visualization methods:
 
-.. code:: python
++ CE hotspot plots for visualizing the centralities of spots. Provide two calculating methods:
+    - Degree centrality: out-degree + in-degree, faithfully reflects the CE strength related to each spot.
+    - Eigenvector centrality: reflects the core regions with active communication.
++ Cell-type-level CE network:
+    - CE strengths among cell-types
 
-    cell_type_mat, \
-    cell_type_names = hn.pr.get_continuous_cell_type_tensor(adata, continuous_cell_type_slot = 'predicted_cell_type',)
+CEs hotspot plots
+----------------------------
+
+Degree centrality of each spot in the COL1A1:DDR1 CE network. Reflecting regions with active COL1A1:DDR1 communication.
 
 .. code:: python
 
@@ -180,9 +190,10 @@ Before constructing multi-view communication network, we need to calculate the `
                           lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1')
 
 
-
 .. image:: tutorial_CE_files/tutorial_CE_8_0.png
 
+Hotspot plot based on eigenvector centrality.
+This plot better detects a clear center than the one based on degree centrality.
 
 .. code:: python
 
@@ -190,10 +201,21 @@ Before constructing multi-view communication network, we need to calculate the `
                           lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1',
                           centrality_measure='eigenvector')
 
-
-
 .. image:: tutorial_CE_files/tutorial_CE_9_0.png
 
+
+Cell-type-level CE network
+----------------------------
+
+Loading the cell-type percentage of each spot.
+
+.. code:: python
+
+    cell_type_mat, \
+    cell_type_names = hn.pr.get_continuous_cell_type_tensor(adata, continuous_cell_type_slot = 'predicted_cell_type',)
+
+Plotting the cell-type-level CE network.
+The thickness of the edge represents the strength of COL1A1:DDR1 communication between the two cell types.
 
 .. code:: python
 
@@ -201,10 +223,15 @@ Before constructing multi-view communication network, we need to calculate the `
                                         lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1', edge_thres=0.2,
                                         palette=hn.brca_default_color_celltype)
 
-
-
 .. image:: tutorial_CE_files/tutorial_CE_10_0.png
 
+
+LR pair clustering
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Agglomerative Clustering the ligand-receptor pairs based on the centrality of each spot.
+The cluster label of each ligand-receptor pair saved in ``clustered_expressed_LR_df['cluster']``.
+The number of clusters can be selected using ``n_clusters`` parameter in :func:`HoloNet.tl.cluster_lr_based_on_ce`.
 
 .. code:: python
 
@@ -212,14 +239,18 @@ Before constructing multi-view communication network, we need to calculate the `
     clustered_expressed_LR_df = hn.tl.cluster_lr_based_on_ce(CE_tensor_filtered, adata, expressed_LR_df, 
                                                              w_best=w_best, cell_cci_centrality=cell_cci_centrality)
 
+Visualize the ligand-receptor pair clusters in a UMAP plot.
+Each ligand-receptor pair has a centrality vector, containing the centralities of spots in the view of CE network
+The UMAP plot is a low dimentional representation of the centrality vectors.
+
 .. code:: python
 
     hn.pl.lr_umap(clustered_expressed_LR_df, cell_cci_centrality, plot_lr_list=['COL1A1:DDR1'], linewidths=0.7)
 
 
-
 .. image:: tutorial_CE_files/tutorial_CE_12_0.png
 
+General CE hotspot of each ligand-receptor cluster (superimposing All CE hotspots of members in a cluster).
 
 .. code:: python
 
@@ -227,19 +258,11 @@ Before constructing multi-view communication network, we need to calculate the `
                                      cell_cci_centrality=cell_cci_centrality,
                                      adata=adata)
 
-
-
 .. image:: tutorial_CE_files/tutorial_CE_13_0.png
-
-
 
 .. image:: tutorial_CE_files/tutorial_CE_13_1.png
 
-
-
 .. image:: tutorial_CE_files/tutorial_CE_13_2.png
-
-
 
 .. image:: tutorial_CE_files/tutorial_CE_13_3.png
 
