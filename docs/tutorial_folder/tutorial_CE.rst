@@ -40,6 +40,7 @@ HoloNet needs three inputs:
     sc.settings.figdir = './figures/'
 
 
+
 Data loading
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -59,6 +60,15 @@ Visualize the cell-type percentages in each spot.
 
 
 .. image:: tutorial_CE_files/tutorial_CE_3_0.png
+
+The figures outputed from HoloNet can be saved if adding ``fname`` parameter.
+
+.. note::
+    The parameters of plotting functions in this tutorials are mainly inherited from two base plotting functions:
+
+    - :func:`HoloNet.plotting.feature_plot`
+    - :func:`HoloNet.plotting.cell_type_level_network`
+
 
 The cell-type label of each spot (the cell-type with maximum percentage in the spot)
 
@@ -142,6 +152,8 @@ Ligand molecules from a single source can only cover a certain region.
 
 Before constructing multi-view communication network, we need to calculate the ``w_best`` to decide the region ('how far is far').
 
+The parameters for culcalating ``w_best`` is shown in :func:`HoloNet.tools.default_w_visium`.
+
 .. code:: ipython3
 
     w_best = hn.tl.default_w_visium(adata)
@@ -151,7 +163,11 @@ Before constructing multi-view communication network, we need to calculate the `
 
 Based on ``w_best``, we can build up the multi-view communication network.
 
-We calculate the edge weights of the multi-view communication network, then filter the edges with low specificities.
+We calculate the edge weights of the multi-view communication network.
+With the more attributions of ligands, :func:`HoloNet.tools.compute_ce_tensor` can set different ``w_best``
+for secreted ligands and plasma-membrane-binding ligands.
+
+Then we filter the edges with low specificities.
 
 .. code:: ipython3
 

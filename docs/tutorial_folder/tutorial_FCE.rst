@@ -1,5 +1,24 @@
-FCE visualization
-==================
+Decoding the holograph of functional cell-cell communication events
+==================================================================
+
+Following the first tutorial, in this tutorial, we demonstrate how HoloNet can be used to
+decode the holograph of functional cell-cell communication events (FCEs) in spatial transcriptomics data.
+
+For each downstream target gene, HoloNet:
+
+- Identifies cell types serving as major senders
+- Identifies ligand–receptor pairs serving as core mediators
+
+in FCEs for specific downstream genes.
+
+
+.. note::
+    The tutorial mainly follows these steps:
+
+    1. Load data and construct multi-view communication event (CE) network
+    #. Predict specific target gene expression.
+    #. Decode the FCEs for the gene by interpreting the trained model.
+    #. Identify genes more affected by cell–cell communication.
 
 
 .. code:: ipython3
@@ -18,14 +37,28 @@ FCE visualization
     hn.set_figure_params(tex_fonts=False)
     sc.settings.figdir = './figures/'
 
+
+Data loading and constructing multi-view CE network
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Just like the first tutorial, load the example breast cancer dataset:
+
 .. code:: ipython3
 
     adata = hn.pp.load_brca_visium_10x()
+
+Load the ligand-receptor (LR) pair database and filter the LR pair:
 
 .. code:: ipython3
 
     LR_df = hn.pp.load_lr_df()
     expressed_LR_df = hn.pp.get_expressed_lr_df(LR_df, adata, expressed_proportion=0.3)
+
+
+Just like the first tutorial, we use :func:`HoloNet.tools.default_w_visium` getting a default ``w_best`` value.
+
+Then build multi-view CE network using :func:`HoloNet.tools.compute_ce_tensor` and :func:`HoloNet.tools.filter_ce_tensor`.
+
 
 .. code:: ipython3
 
@@ -33,30 +66,64 @@ FCE visualization
     CE_tensor = hn.tl.compute_ce_tensor(adata, lr_df=expressed_LR_df, w_best=w_best)
     CE_tensor_filtered = hn.tl.filter_ce_tensor(CE_tensor, adata, 
                                                 lr_df=expressed_LR_df, w_best=w_best)
-
-
 .. parsed-literal::
-
     100%|██████████| 286/286 [33:06<00:00,  6.95s/it]
 
+
+
+Predicting the target gene expression using a graph model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We construct a multi-view graph learning model to predict the expression of gene on interest.
+
+.. image:: tutorial_FCE_files/github_readme_figure05.png
+    :align: center
+
+
+Selecting the target gene to be predicted
+------------------------------------------
+
+Firstly, we select the target genes to be predicted.
+
+The genes with too low, too sparse or too average expression are filtered out.
+The filtering parameters can be changed in :func:`HoloNet.predicting.get_gene_expr`.
+
+Then we select *MMP11*, a gene related to tumor invasion as an example target gene.
+
+.. code:: ipython3
+
+    target_all_gene_expr, used_gene_list = hn.pr.get_gene_expr(adata, expressed_LR_df)
+    target = hn.pr.get_one_case_expr(target_all_gene_expr, cases_list=used_gene_list,
+                                     used_case_name='MMP11')
+    sc.pl.spatial(adata, color=['MMP11'], cmap='Spectral_r', size=1.4, alpha=0.7)
+
+.. image:: tutorial_FCE_files/tutorial_FCE_5_0.png
+
+
+Getting inputs of the graph model
+-----------------------------------
+
+In the multi-view graph learning model, we:
+
+- Use the cell-type matrix as the feature matrix.
+- Use normalized multi-view CE network as the adjacency matrix.
+
+Get the feature matrix and adjacency matrix:
 
 .. code:: ipython3
 
     X, cell_type_names = hn.pr.get_continuous_cell_type_tensor(adata, continuous_cell_type_slot = 'predicted_cell_type',)
     adj = hn.pr.adj_normalize(adj=CE_tensor_filtered, cell_type_tensor=X, only_between_cell_type=True)
 
-.. code:: ipython3
+If selecting to use categorical cell-type labels,
+the feature matrix can be derived from :func:`HoloNet.predicting.get_one_hot_cell_type_tensor`.
 
-    target_all_gene_expr, used_gene_list = hn.pr.get_gene_expr(adata, expressed_LR_df)
-    
-    target = hn.pr.get_one_case_expr(target_all_gene_expr, cases_list=used_gene_list, 
-                                     used_case_name='MMP11')
-    sc.pl.spatial(adata, color=['MMP11'], cmap='Spectral_r', size=1.4, alpha=0.7)
+Training the graph model
+---------------------------
 
-
-
-.. image:: tutorial_FCE_files/tutorial_FCE_5_0.png
-
+The we train the graph model to predict *MMP11* expression.
+If GPU is avaiable, you can set the ``device`` parameter as 'gpu'. Otherwise, we use CPU by default.
+The predicted *MMP11* expression pattern are similar to the true pattern.
 
 .. code:: ipython3
 
@@ -64,24 +131,30 @@ FCE visualization
     predict_result_MMP11 = hn.pl.plot_mgc_result(trained_MGC_model_MMP11_list, adata, X, adj)
     np.corrcoef(predict_result_MMP11.T, target.T)[0,1]
 
-
 .. parsed-literal::
-
     100%|██████████| 50/50 [01:47<00:00,  2.15s/it]
     100%|██████████| 50/50 [00:00<00:00, 102.85it/s]
 
-
-
 .. image:: tutorial_FCE_files/tutorial_FCE_6_1.png
 
-
-
-
 .. parsed-literal::
-
     0.5655606970605704
 
 
+Decode the FCEs for the gene by interpreting the trained model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After training the graph model and find the predicted expression profile similar to the true one,
+we can interprete the trained model to reveal the holography of FCEs.
+
+For each target gene, there are three main output figure:
+
++ LR rank
++ Delta E proportion in each cell-type
++ Cell-type-level FCE network
+
+LR rank
+---------
 
 .. code:: ipython3
 
@@ -89,9 +162,10 @@ FCE visualization
                                                   plot_cluster=False, repeat_attention_scale=True)
 
 
-
 .. image:: tutorial_FCE_files/tutorial_FCE_7_0.png
 
+Delta E proportion in each cell-type
+---------------------------------------
 
 .. code:: ipython3
 
@@ -99,14 +173,14 @@ FCE visualization
                                         cell_type_names,
                                         palette = hn.brca_default_color_celltype)
 
-
 .. parsed-literal::
-
     100%|██████████| 50/50 [00:23<00:00,  2.11it/s]
 
-
-
 .. image:: tutorial_FCE_files/tutorial_FCE_8_1.png
+
+
+Cell-type-level FCE network
+------------------------------
 
 
 .. code:: ipython3
@@ -115,15 +189,13 @@ FCE visualization
                                          cell_type_names, plot_lr='POSTN:PTK7', edge_thres=0.2,
                                          palette=hn.brca_default_color_celltype,)
 
-
 .. parsed-literal::
-
     100%|██████████| 50/50 [00:00<00:00, 445.78it/s]
-
-
 
 .. image:: tutorial_FCE_files/tutorial_FCE_9_1.png
 
+Identify genes more affected by cell–cell communication
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: ipython3
 
@@ -292,6 +364,8 @@ FCE visualization
     </div>
 
 
+Model saving and loading
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: ipython3
 
