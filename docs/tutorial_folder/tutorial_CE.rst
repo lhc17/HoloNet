@@ -23,7 +23,7 @@ HoloNet needs three inputs:
     #. Visualize communication based on the multi-view network.
     #. Other analysis methods (such as clustering LR pairs).
 
-.. code:: python
+.. code:: ipython3
 
     import HoloNet as hn
     
@@ -45,15 +45,15 @@ Data loading
 
 We prepare a example breast cancer dataset for users from the 10x Genomics website.
 We preprocessed the dataset, including filtering, normalization and cell-type annotation.
-Users can load the example dataset via :func:`HoloNet.pp.load_brca_visium_10x`.
+Users can load the example dataset via :func:`HoloNet.preprocessing.load_brca_visium_10x`.
 
-.. code:: python
+.. code:: ipython3
 
     adata = hn.pp.load_brca_visium_10x()
 
 Visualize the cell-type percentages in each spot.
 
-.. code:: python
+.. code:: ipython3
 
     hn.pl.plot_cell_type_proportion(adata, plot_cell_type='stroma')
 
@@ -62,7 +62,7 @@ Visualize the cell-type percentages in each spot.
 
 The cell-type label of each spot (the cell-type with maximum percentage in the spot)
 
-.. code:: python
+.. code:: ipython3
 
     sc.pl.spatial(adata, color=['cell_type'], size=1.4, alpha=0.7,
                  palette=hn.brca_default_color_celltype)
@@ -74,7 +74,7 @@ We provide a database with pairwise ligand and receptor genes for users.
 Load the database and filter the LR pairs, requiring both ligand and receptor genes to be expressed
 in a certain percentage of cells (or spots).
 
-.. code:: python
+.. code:: ipython3
 
     LR_df = hn.pp.load_lr_df()
     expressed_LR_df = hn.pp.get_expressed_lr_df(LR_df, adata, expressed_proportion=0.3)
@@ -142,7 +142,7 @@ Ligand molecules from a single source can only cover a certain region.
 
 Before constructing multi-view communication network, we need to calculate the ``w_best`` to decide the region ('how far is far').
 
-.. code:: python
+.. code:: ipython3
 
     w_best = hn.tl.default_w_visium(adata)
     hn.pl.select_w(adata, w_best=w_best)
@@ -153,7 +153,7 @@ Based on ``w_best``, we can build up the multi-view communication network.
 
 We calculate the edge weights of the multi-view communication network, then filter the edges with low specificities.
 
-.. code:: python
+.. code:: ipython3
 
     CE_tensor = hn.tl.compute_ce_tensor(adata, lr_df=expressed_LR_df, w_best=w_best)
     CE_tensor_filtered = hn.tl.filter_ce_tensor(CE_tensor, adata, 
@@ -184,7 +184,7 @@ CEs hotspot plots
 
 Degree centrality of each spot in the COL1A1:DDR1 CE network. Reflecting regions with active COL1A1:DDR1 communication.
 
-.. code:: python
+.. code:: ipython3
 
     hn.pl.ce_hotspot_plot(CE_tensor_filtered, adata, 
                           lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1')
@@ -195,7 +195,7 @@ Degree centrality of each spot in the COL1A1:DDR1 CE network. Reflecting regions
 Hotspot plot based on eigenvector centrality.
 This plot better detects a clear center than the one based on degree centrality.
 
-.. code:: python
+.. code:: ipython3
 
     hn.pl.ce_hotspot_plot(CE_tensor_filtered, adata, 
                           lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1',
@@ -209,7 +209,7 @@ Cell-type-level CE network
 
 Loading the cell-type percentage of each spot.
 
-.. code:: python
+.. code:: ipython3
 
     cell_type_mat, \
     cell_type_names = hn.pr.get_continuous_cell_type_tensor(adata, continuous_cell_type_slot = 'predicted_cell_type',)
@@ -217,7 +217,7 @@ Loading the cell-type percentage of each spot.
 Plotting the cell-type-level CE network.
 The thickness of the edge represents the strength of COL1A1:DDR1 communication between the two cell types.
 
-.. code:: python
+.. code:: ipython3
 
     _ = hn.pl.ce_cell_type_network_plot(CE_tensor_filtered, cell_type_mat, cell_type_names,
                                         lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1', edge_thres=0.2,
@@ -233,7 +233,7 @@ Agglomerative Clustering the ligand-receptor pairs based on the centrality of ea
 The cluster label of each ligand-receptor pair saved in ``clustered_expressed_LR_df['cluster']``.
 The number of clusters can be selected using ``n_clusters`` parameter in :func:`HoloNet.tl.cluster_lr_based_on_ce`.
 
-.. code:: python
+.. code:: ipython3
 
     cell_cci_centrality = hn.tl.compute_ce_network_eigenvector_centrality(CE_tensor_filtered)
     clustered_expressed_LR_df = hn.tl.cluster_lr_based_on_ce(CE_tensor_filtered, adata, expressed_LR_df, 
@@ -243,7 +243,7 @@ Visualize the ligand-receptor pair clusters in a UMAP plot.
 Each ligand-receptor pair has a centrality vector, containing the centralities of spots in the view of CE network
 The UMAP plot is a low dimentional representation of the centrality vectors.
 
-.. code:: python
+.. code:: ipython3
 
     hn.pl.lr_umap(clustered_expressed_LR_df, cell_cci_centrality, plot_lr_list=['COL1A1:DDR1'], linewidths=0.7)
 
@@ -252,7 +252,7 @@ The UMAP plot is a low dimentional representation of the centrality vectors.
 
 General CE hotspot of each ligand-receptor cluster (superimposing All CE hotspots of members in a cluster).
 
-.. code:: python
+.. code:: ipython3
 
     hn.pl.lr_cluster_ce_hotspot_plot(lr_df=clustered_expressed_LR_df,
                                      cell_cci_centrality=cell_cci_centrality,
