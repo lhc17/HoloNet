@@ -34,7 +34,7 @@ Getting started
 ^^^^^^^^^^^^^^^
 Please refer to the `Documentation <https://holonet-doc.readthedocs.io/en/latest/>`_, including:
 
-- `Tutorials <https://holonet-doc.readthedocs.io/en/latest/>`_
+- `Tutorials <https://holonet-doc.readthedocs.io/en/latest/main_tutorial.html>`_
 - `API <https://holonet-doc.readthedocs.io/en/latest/api.html>`_
 
 
