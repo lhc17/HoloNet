@@ -1,5 +1,5 @@
-Cell-cell communication analysis and visualization
-=====================
+Analyzing and visualizing cell-cell communication events
+========================================================
 
 In this tutorial, we demonstrate how HoloNet can be used to analyze and visualize cell-cell communication
 in spatial transcriptomics data.
@@ -231,7 +231,7 @@ LR pair clustering
 
 Agglomerative Clustering the ligand-receptor pairs based on the centrality of each spot.
 The cluster label of each ligand-receptor pair saved in ``clustered_expressed_LR_df['cluster']``.
-The number of clusters can be selected using ``n_clusters`` parameter in :func:`HoloNet.tl.cluster_lr_based_on_ce`.
+The number of clusters can be selected using ``n_clusters`` parameter in :func:`HoloNet.tools.cluster_lr_based_on_ce`.
 
 .. code:: ipython3
 
