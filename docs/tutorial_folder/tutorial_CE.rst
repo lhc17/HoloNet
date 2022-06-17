@@ -44,6 +44,9 @@ HoloNet needs three inputs:
 Data loading
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Loading example spatial transcriptomic data
+-----------------------------------------------
+
 We prepare a example breast cancer dataset for users from the 10x Genomics website.
 We preprocessed the dataset, including filtering, normalization and cell-type annotation.
 Users can load the example dataset via :func:`HoloNet.preprocessing.load_brca_visium_10x`.
@@ -79,6 +82,9 @@ The cell-type label of each spot (the cell-type with maximum percentage in the s
 
 .. image:: tutorial_CE_files/tutorial_CE_2_0.png
 
+
+Loading ligand-receptor database
+-----------------------------------------------
 
 We provide a database with pairwise ligand and receptor genes for users.
 Load the database and filter the LR pairs, requiring both ligand and receptor genes to be expressed

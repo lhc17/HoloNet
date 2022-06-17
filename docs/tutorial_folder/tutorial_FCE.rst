@@ -78,6 +78,7 @@ We construct a multi-view graph learning model to predict the expression of gene
 
 .. image:: tutorial_FCE_files/github_readme_figure05.png
     :align: center
+    :width: 60 %
 
 
 Selecting the target gene to be predicted
@@ -118,6 +119,7 @@ Get the feature matrix and adjacency matrix:
 If selecting to use categorical cell-type labels,
 the feature matrix can be derived from :func:`HoloNet.predicting.get_one_hot_cell_type_tensor`.
 
+
 Training the graph model
 ---------------------------
 
@@ -140,6 +142,14 @@ The predicted *MMP11* expression pattern are similar to the true pattern.
 .. parsed-literal::
     0.5655606970605704
 
+If GPU is not available, you can set ``repeat_num`` as a lower number to make the training faster.
+
+.. note::
+    The parameters of plotting functions in this tutorials are mainly inherited from two base plotting functions:
+
+    - :func:`HoloNet.plotting.feature_plot`
+    - :func:`HoloNet.plotting.cell_type_level_network`
+
 
 Decode the FCEs for the gene by interpreting the trained model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -150,11 +160,19 @@ we can interprete the trained model to reveal the holography of FCEs.
 For each target gene, there are three main output figure:
 
 + LR rank
-+ Delta E proportion in each cell-type
+    - Identify ligand–receptor (LR) pairs serving as core mediators in FCEs for the target gene.
 + Cell-type-level FCE network
+    - Identifies cell types serving as major senders
+    - The cell-type-level FCE network can be LR-pair-specific or general.
++ Delta E proportion in each cell-type
+    - Identify target gene expression in which cell-types are more dominated by FCEs.
 
 LR rank
 ---------
+
+Plot the top 15 LR pairs (15 can be changed using ``plot_lr_num`` parameter) with the highest view attention weights
+The heatmap displays the attention weights of each view obtained from repeated training for 50 times.
+The bar plot represents the mean values of the attention weights of each view.
 
 .. code:: ipython3
 
@@ -164,8 +182,44 @@ LR rank
 
 .. image:: tutorial_FCE_files/tutorial_FCE_7_0.png
 
+If you want plot the LR-pair clustering results in the LR rank plot, you can set ``cluster_col=True``
+and provide clustering results in ``expressed_LR_df``.
+
+LR pair clustering can see the first tutorial and :func:`HoloNet.tools.cluster_lr_based_on_ce`.
+
+Cell-type-level FCE network
+------------------------------
+
+Cell-type-level POSTN:PTK7 FCE network for *MMP11*.
+The thickness of the edge represents the strength of POSTN:PTK7 FCEs between the two cell types.
+The network are derived from interpreting the graph convolutional layer.
+
+In the plot, you can focus on one cell-type and look the edges targeted on it,
+in order to identify which cell-types are the major sender for it.
+
+.. code:: ipython3
+
+    _ = hn.pl.fce_cell_type_network_plot(trained_MGC_model_MMP11_list, expressed_LR_df, X, adj,
+                                         cell_type_names, plot_lr='POSTN:PTK7', edge_thres=0.2,
+                                         palette=hn.brca_default_color_celltype,)
+
+.. parsed-literal::
+    100%|██████████| 50/50 [00:00<00:00, 445.78it/s]
+
+.. image:: tutorial_FCE_files/tutorial_FCE_9_1.png
+
+If ``plot_lr`` is one of the LR pair in the ``expressed_LR_df``,
+:func:`HoloNet.plotting.fce_cell_type_network_plot` will plot the cell-type-level FCE network for a specific LR pair.
+If ``plot_lr='all'``, it will plot the general cell-type-level FCE network for all LR pairs.
+
+
 Delta E proportion in each cell-type
 ---------------------------------------
+
+Identify target gene expression in which cell-types are more dominated by FCEs.
+
+The ratio of the expression change caused by CEs (ΔE) to the sum of ΔE
+and the baseline MMP11 expression (E0) in each cell type.
 
 .. code:: ipython3
 
@@ -179,34 +233,29 @@ Delta E proportion in each cell-type
 .. image:: tutorial_FCE_files/tutorial_FCE_8_1.png
 
 
-Cell-type-level FCE network
-------------------------------
-
-
-.. code:: ipython3
-
-    _ = hn.pl.fce_cell_type_network_plot(trained_MGC_model_MMP11_list, expressed_LR_df, X, adj, 
-                                         cell_type_names, plot_lr='POSTN:PTK7', edge_thres=0.2,
-                                         palette=hn.brca_default_color_celltype,)
-
-.. parsed-literal::
-    100%|██████████| 50/50 [00:00<00:00, 445.78it/s]
-
-.. image:: tutorial_FCE_files/tutorial_FCE_9_1.png
-
 Identify genes more affected by cell–cell communication
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We train the graph model for all selected target genes.
+(:func:`HoloNet.predicting.get_gene_expr` select target gene to be predicted)
+
+Comparing with prediction only using cell-type information, the target with higher performance improvement
+after considering CEs can be regarded as the genes more affected by cell–cell communication.
 
 .. code:: ipython3
 
     trained_MGC_model_only_type_list, \
     trained_MGC_model_type_GCN_list = hn.pr.mgc_training_for_multiple_targets(X, adj, target_all_gene_expr, device='gpu')
 
-
 .. parsed-literal::
-
     100%|██████████| 567/567 [2:27:20<00:00, 15.59s/it]  
 
+.. note::
+    The training process will take a lot of time, you can select to:
+        - Change the parameters in :func:`HoloNet.predicting.get_gene_expr` to obtain less target genes to be predicted.
+        - Use :func:`HoloNet.predicting.save_model_list` in the next section to save the trained model.
+
+Get the predicting results of all target genes:
 
 .. code:: ipython3
 
@@ -216,13 +265,15 @@ Identify genes more affected by cell–cell communication
     predicted_expr_only_type_df = hn.pr.get_mgc_result_for_multiple_targets(trained_MGC_model_only_type_list, 
                                                                             X, adj,
                                                                             used_gene_list, adata)
-
-
 .. parsed-literal::
-
     100%|██████████| 567/567 [03:32<00:00,  2.67it/s]
     100%|██████████| 567/567 [02:50<00:00,  3.33it/s]
 
+Calculate the Pearson correlation between the predicted expression and the true expression.
+Compare the correlation from model only using cell-type information and the ones from HoloNet.
+
+The head target genes in ``only_type_vs_GCN_all`` table are the genes more affected by cell–cell communication.
+Gene Ontology (GO) enrichment can be implemented based on the table.
 
 .. code:: ipython3
 
@@ -231,17 +282,11 @@ Identify genes more affected by cell–cell communication
                                                          used_gene_list, target_all_gene_expr, 
                                                          plot_gene_list = ['MMP11'], linewidths=0.5)
 
-
-
 .. image:: tutorial_FCE_files/tutorial_FCE_12_0.png
-
 
 .. code:: ipython3
 
     only_type_vs_GCN_all.head(15)
-
-
-
 
 .. raw:: html
 
@@ -367,15 +412,24 @@ Identify genes more affected by cell–cell communication
 Model saving and loading
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Trained model can be saved to avoid repetitive training.
+The models will be saved in 'model_save_folder/project_name/gene_name'.
+The 'gene_name' are genes in the ``target_gene_name_list``.
+For different trained model, you can set different ``project_name``.
+
 .. code:: ipython3
 
     hn.pr.save_model_list(trained_MGC_model_type_GCN_list, 
                           project_name='BRCA_10x_generating_all_target_gene_type_GCN', 
                           target_gene_name_list=used_gene_list)
-    
     hn.pr.save_model_list(trained_MGC_model_only_type_list, 
                           project_name='BRCA_10x_generating_all_target_gene_only_type',
                           target_gene_name_list=used_gene_list)
+
+Setting the ``target_gene_name_list`` as one gene, the trained model for *MMP11* can be saved in the same way.
+
+Model loading. ``used_genes`` are the list of 'gene_name' before.
+Note that the order of ``used_genes`` is different from the ``used_gene_list`` before.
 
 .. code:: ipython3
 
@@ -385,18 +439,18 @@ Model saving and loading
     trained_MGC_model_type_GCN_list_tmp, \
     used_genes = hn.pr.load_model_list(X, adj, project_name='BRCA_10x_generating_all_target_gene_type_GCN')
 
+Using the loaded model, you can repeat the results in the previous section.
+
 .. code:: ipython3
 
     predicted_expr_type_GCN_df_tmp = hn.pr.get_mgc_result_for_multiple_targets(trained_MGC_model_type_GCN_list_tmp,
                                                                             X, adj,
                                                                             used_genes, adata)
-    predicted_expr_only_type_df_tmp = hn.pr.get_mgc_result_for_multiple_targets(trained_MGC_model_only_type_list_tmp, 
+    predicted_expr_only_type_df_tmp = hn.pr.get_mgc_result_for_multiple_targets(trained_MGC_model_only_type_list_tmp,
                                                                             X, adj,
                                                                             used_genes, adata)
 
-
 .. parsed-literal::
-
     100%|██████████| 567/567 [03:34<00:00,  2.64it/s]
     100%|██████████| 567/567 [02:49<00:00,  3.35it/s]
 
@@ -404,11 +458,9 @@ Model saving and loading
 .. code:: ipython3
 
     only_type_vs_GCN_all2 = hn.pl.find_genes_linked_to_ce(predicted_expr_type_GCN_df_tmp.loc[:,used_gene_list],
-                                                         predicted_expr_only_type_df_tmp.loc[:,used_gene_list], 
-                                                         used_gene_list, target_all_gene_expr, 
+                                                         predicted_expr_only_type_df_tmp.loc[:,used_gene_list],
+                                                         used_gene_list, target_all_gene_expr,
                                                          plot_gene_list = ['MMP11'], linewidths=0.5)
-
-
 
 .. image:: tutorial_FCE_files/tutorial_FCE_17_0.png
 
