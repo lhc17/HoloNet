@@ -186,7 +186,7 @@ Then we filter the edges with low specificities.
 
 .. note::
     This step will consume a lot of memory.
-    If you run out of memory, you can choose to only compute communication networks with fewer ligand-receptor pairs.
+    If you run out of memory, you can choose to only compute communication networks with fewer ligand-receptor pairs, and turn down the value of ``n_pairs`` parameter in :func:`HoloNet.tools.filter_ce_tensor`
     We are working on a new version to solve this problem.
 
 
