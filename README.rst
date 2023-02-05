@@ -47,4 +47,4 @@ Please refer to the `Documentation <https://holonet-doc.readthedocs.io/en/latest
 
 Citation
 ^^^^^^^^^^^^^^^
-
+Li, H., Ma, T., Hao, M., Wei, L., & Zhang, X. (2022). Decoding functional cell–cell communication events by multi-view graph learning on spatial transcriptomics. bioRxiv, 2022-06.
