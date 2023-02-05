@@ -23,6 +23,7 @@ HoloNet needs three inputs:
     #. Visualize communication based on the multi-view network.
     #. Other analysis methods (such as clustering LR pairs).
 
+
 .. code:: ipython3
 
     import HoloNet as hn
@@ -40,7 +41,6 @@ HoloNet needs three inputs:
     sc.settings.figdir = './figures/'
 
 
-
 Data loading
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -51,16 +51,17 @@ We prepare a example breast cancer dataset for users from the 10x Genomics websi
 We preprocessed the dataset, including filtering, normalization and cell-type annotation.
 Users can load the example dataset via :func:`HoloNet.preprocessing.load_brca_visium_10x`.
 
+
 .. code:: ipython3
 
     adata = hn.pp.load_brca_visium_10x()
+
 
 Visualize the cell-type percentages in each spot.
 
 .. code:: ipython3
 
     hn.pl.plot_cell_type_proportion(adata, plot_cell_type='stroma')
-
 
 .. image:: tutorial_CE_files/tutorial_CE_3_0.png
 
@@ -71,7 +72,6 @@ The figures outputed from HoloNet can be saved if adding ``fname`` parameter.
 
     - :func:`HoloNet.plotting.feature_plot`
     - :func:`HoloNet.plotting.cell_type_level_network`
-
 
 The cell-type label of each spot (the cell-type with maximum percentage in the spot)
 
@@ -92,63 +92,13 @@ in a certain percentage of cells (or spots).
 
 .. code:: ipython3
 
-    LR_df = hn.pp.load_lr_df()
-    expressed_LR_df = hn.pp.get_expressed_lr_df(LR_df, adata, expressed_proportion=0.3)
-    expressed_LR_df.head(3)
+    interaction_db, cofactor_db, complex_db = hn.pp.load_lr_df(human_or_mouse='human')
+    expressed_lr_df = hn.pp.get_expressed_lr_df(interaction_db, complex_db, adata)
+    expressed_lr_df.shape
 
+.. parsed-literal::
 
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Ligand_gene_symbol</th>
-          <th>Receptor_gene_symbol</th>
-          <th>Ligand_location</th>
-          <th>LR_Pair</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>A2M</td>
-          <td>LRP1</td>
-          <td>secreted</td>
-          <td>A2M:LRP1</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>ADAM15</td>
-          <td>ITGA5</td>
-          <td>plasma membrane</td>
-          <td>ADAM15:ITGA5</td>
-        </tr>
-        <tr>
-          <th>2</th>
-          <td>ADAM15</td>
-          <td>ITGAV</td>
-          <td>plasma membrane</td>
-          <td>ADAM15:ITGAV</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
+    (325, 12)
 
 
 Constructing multi-view CE network
@@ -159,6 +109,7 @@ Ligand molecules from a single source can only cover a certain region.
 Before constructing multi-view communication network, we need to calculate the ``w_best`` to decide the region ('how far is far').
 
 The parameters for culcalating ``w_best`` is shown in :func:`HoloNet.tools.default_w_visium`.
+
 
 .. code:: ipython3
 
@@ -177,12 +128,9 @@ Then we filter the edges with low specificities.
 
 .. code:: ipython3
 
-    CE_tensor = hn.tl.compute_ce_tensor(adata, lr_df=expressed_LR_df, w_best=w_best)
-    CE_tensor_filtered = hn.tl.filter_ce_tensor(CE_tensor, adata, 
-                                                lr_df=expressed_LR_df, w_best=w_best)
-.. parsed-literal::
-
-    100%|██████████| 286/286 [35:28<00:00,  7.44s/it]
+    elements_expr_df_dict = hn.tl.elements_expr_df_calculate(expressed_lr_df, complex_db, cofactor_db, adata)
+    ce_tensor = hn.tl.compute_ce_tensor(expressed_lr_df, w_best, elements_expr_df_dict, adata)
+    filtered_ce_tensor = hn.tl.filter_ce_tensor(ce_tensor, adata, expressed_lr_df, elements_expr_df_dict, w_best)
 
 .. note::
     This step will consume a lot of memory.
@@ -204,26 +152,28 @@ Based on the multi-view CE network, we provide two visualization methods:
 CEs hotspot plots
 ----------------------------
 
-Degree centrality of each spot in the COL1A1:DDR1 CE network. Reflecting regions with active COL1A1:DDR1 communication.
+Degree centrality of each spot in the TGFB1:(TGFBR1+TGFBR2) CE network. Reflecting regions with active TGFB1:(TGFBR1+TGFBR2) communication.
 
 .. code:: ipython3
 
-    hn.pl.ce_hotspot_plot(CE_tensor_filtered, adata, 
-                          lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1')
+    hn.pl.ce_hotspot_plot(filtered_ce_tensor, adata, 
+                          lr_df=expressed_lr_df, plot_lr='TGFB1:(TGFBR1+TGFBR2)')
 
 
 .. image:: tutorial_CE_files/tutorial_CE_8_0.png
 
+
 Hotspot plot based on eigenvector centrality.
 This plot better detects a clear center than the one based on degree centrality.
 
+
 .. code:: ipython3
 
-    hn.pl.ce_hotspot_plot(CE_tensor_filtered, adata, 
-                          lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1',
+    hn.pl.ce_hotspot_plot(filtered_ce_tensor, adata, 
+                          lr_df=expressed_lr_df, plot_lr='TGFB1:(TGFBR1+TGFBR2)',
                           centrality_measure='eigenvector')
 
-.. image:: tutorial_CE_files/tutorial_CE_9_0.png
+.. image:: tutorial_CE_files/tutorial_CE_9_1.png
 
 
 Cell-type-level CE network
@@ -236,13 +186,14 @@ Loading the cell-type percentage of each spot.
     cell_type_mat, \
     cell_type_names = hn.pr.get_continuous_cell_type_tensor(adata, continuous_cell_type_slot = 'predicted_cell_type',)
 
+
 Plotting the cell-type-level CE network.
-The thickness of the edge represents the strength of COL1A1:DDR1 communication between the two cell types.
+The thickness of the edge represents the strength of TGFB1:(TGFBR1+TGFBR2) communication between the two cell types.
 
 .. code:: ipython3
 
-    _ = hn.pl.ce_cell_type_network_plot(CE_tensor_filtered, cell_type_mat, cell_type_names,
-                                        lr_df=expressed_LR_df, plot_lr='COL1A1:DDR1', edge_thres=0.2,
+    _ = hn.pl.ce_cell_type_network_plot(filtered_ce_tensor, cell_type_mat, cell_type_names,
+                                        lr_df=expressed_lr_df, plot_lr='TGFB1:(TGFBR1+TGFBR2)', edge_thres=0.2,
                                         palette=hn.brca_default_color_celltype)
 
 .. image:: tutorial_CE_files/tutorial_CE_10_0.png
@@ -255,19 +206,20 @@ Agglomerative Clustering the ligand-receptor pairs based on the centrality of ea
 The cluster label of each ligand-receptor pair saved in ``clustered_expressed_LR_df['cluster']``.
 The number of clusters can be selected using ``n_clusters`` parameter in :func:`HoloNet.tools.cluster_lr_based_on_ce`.
 
+
 .. code:: ipython3
 
-    cell_cci_centrality = hn.tl.compute_ce_network_eigenvector_centrality(CE_tensor_filtered)
-    clustered_expressed_LR_df = hn.tl.cluster_lr_based_on_ce(CE_tensor_filtered, adata, expressed_LR_df, 
+    cell_cci_centrality = hn.tl.compute_ce_network_eigenvector_centrality(filtered_ce_tensor)
+    clustered_expressed_LR_df,_ = hn.tl.cluster_lr_based_on_ce(filtered_ce_tensor, adata, expressed_lr_df, 
                                                              w_best=w_best, cell_cci_centrality=cell_cci_centrality)
 
-Visualize the ligand-receptor pair clusters in a UMAP plot.
-Each ligand-receptor pair has a centrality vector, containing the centralities of spots in the view of CE network
-The UMAP plot is a low dimentional representation of the centrality vectors.
+
+Dendrogram for hierarchically clustering all ligand–receptor pairs. 
 
 .. code:: ipython3
 
-    hn.pl.lr_umap(clustered_expressed_LR_df, cell_cci_centrality, plot_lr_list=['COL1A1:DDR1'], linewidths=0.7)
+    hn.pl.lr_clustering_dendrogram(_, expressed_lr_df, ['TGFB1:(TGFBR1+TGFBR2)'], 
+                                   dflt_col = '#333333',)
 
 
 .. image:: tutorial_CE_files/tutorial_CE_12_0.png
@@ -280,11 +232,20 @@ General CE hotspot of each ligand-receptor cluster (superimposing All CE hotspot
                                      cell_cci_centrality=cell_cci_centrality,
                                      adata=adata)
 
+
+
 .. image:: tutorial_CE_files/tutorial_CE_13_0.png
+
+
 
 .. image:: tutorial_CE_files/tutorial_CE_13_1.png
 
+
+
 .. image:: tutorial_CE_files/tutorial_CE_13_2.png
 
+
+
 .. image:: tutorial_CE_files/tutorial_CE_13_3.png
+
 
