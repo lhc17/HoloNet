@@ -43,6 +43,7 @@ Constructing multi-view CE network
 .. autosummary::
    :toctree: ./generated
 
+   elements_expr_df_calculate
    compute_ce_tensor
    filter_ce_tensor
    
@@ -150,6 +151,7 @@ Plotting CEs
    ce_hotspot_plot
    ce_cell_type_network_plot
    lr_umap
+   lr_clustering_dendrogram
    lr_cluster_ce_hotspot_plot
  
  
@@ -165,13 +167,14 @@ Plotting FCEs by interpreting the graph neural network
    plot_mgc_result
    
    
-Plots for identifying genes more affected by cell–cell communication
+Plots for identifying genes dominated by cell–cell communication
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
 
 .. autosummary::
    :toctree: ./generated
    
    find_genes_linked_to_ce
+   detect_pathway_related_genes
    
    
 Plots for selecting parameters
