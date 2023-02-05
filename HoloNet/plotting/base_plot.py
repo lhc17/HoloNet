@@ -70,7 +70,7 @@ def feature_plot(feature_mat: Union[torch.Tensor, np.ndarray],
     if scale:
         feature_mat = (feature_mat - feature_mat.min()) / (feature_mat.max() - feature_mat.min())
 
-    plot_feature_adata = AnnData(np.array(feature_mat), obs=adata.obs,
+    plot_feature_adata = AnnData(np.array(feature_mat), obs=adata.obs.iloc[:,:3],
                                       var=var_mat, uns=adata.uns, obsm=adata.obsm, dtype='float64')
 
     if cutoff is not None:
@@ -86,9 +86,10 @@ def feature_plot(feature_mat: Union[torch.Tensor, np.ndarray],
 def cell_type_level_network(sr_network: np.ndarray,
                             cell_type_names: List[str],
                             edge_thres: float = 0.05,
-                            edge_width_times: float = 1.5,
-                            linewidths: float = 1.0,
+                            edge_width_times: float = 2.5,
+                            linewidths: float = 2.0,
                             edgecolors: str = 'black',
+                            node_size: int = 600,
                             connectionstyle: str = 'arc3, rad = 0.15',
                             arrowstyle: str = '-|>',
                             palette: Optional[dict] = None,
@@ -133,6 +134,7 @@ def cell_type_level_network(sr_network: np.ndarray,
     sr_network_graph = nx.DiGraph()
     sr_network_graph.add_nodes_from(cell_type_names)
     plt.figure(figsize=(3, 3))
+    plt.tight_layout()
     for i in range(sr_network.shape[0]):
         for j in range(sr_network.shape[0]):
             if sr_network[i][j] > edge_thres:
@@ -141,13 +143,19 @@ def cell_type_level_network(sr_network: np.ndarray,
 
     if palette is not None:
         node_color = [palette[i] for i in cell_type_names]
+        edge_color = [palette[i[0]] for i in sr_network_graph.edges]
     else:
         node_color = None
+        edge_color = None
+        
+        
 
     nx.draw(sr_network_graph, with_labels=True, pos=nx.circular_layout(sr_network_graph),
             linewidths=linewidths, edgecolors=edgecolors,
             node_color=node_color,
+            node_size=node_size,
             connectionstyle=connectionstyle, arrowstyle=arrowstyle,
+            edge_color=edge_color,
             width=[float(v['weight'] * edge_width_times) for (r, c, v) in sr_network_graph.edges(data=True)], **kwargs)
 
     if fname is not None:
@@ -182,6 +190,7 @@ def plot_cell_type_proportion(adata: AnnData,
         Other paremeters in 'feature_plot' function.
 
     """
-    tmp = adata.obsm[continuous_cell_type_slot]
+    col = [ct for ct in adata.obsm['predicted_cell_type'].columns if ct != 'max']
+    tmp = adata.obsm[continuous_cell_type_slot][col]
     feature_plot(np.array(tmp).T, adata, feature_names=list(tmp.columns),
                  plot_feature=plot_cell_type, fname=fname, **kwargs)

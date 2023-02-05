@@ -49,6 +49,7 @@ def read_visium(
         library_id: Optional[str] = None,
         load_images: Optional[bool] = True,
         source_image_path: Optional[Union[str, Path]] = None,
+        image_file_title: str = '',
 ) -> AnnData:
     """
     Similar with sc.read_visium. Add methods for load the 10x mtx folder as a spatial Anndata, or add
@@ -93,10 +94,10 @@ def read_visium(
 
     if load_images:
         files = dict(
-            tissue_positions_file=path / 'spatial/tissue_positions_list.csv',
-            scalefactors_json_file=path / 'spatial/scalefactors_json.json',
-            hires_image=path / 'spatial/tissue_hires_image.png',
-            lowres_image=path / 'spatial/tissue_lowres_image.png',
+            tissue_positions_file=path / ('spatial/' + image_file_title + 'tissue_positions_list.csv'),
+            scalefactors_json_file=path / ('spatial/' + image_file_title + 'scalefactors_json.json'),
+            hires_image=path / ('spatial/' + image_file_title + 'tissue_hires_image.png'),
+            lowres_image=path / ('spatial/' + image_file_title + 'tissue_lowres_image.png'),
         )
 
         adata.uns["spatial"][library_id]['images'] = dict()

@@ -104,8 +104,18 @@ def lr_rank_in_mgc(trained_MGC_model_list: List[MGC_Model],
     axes1.set(xlabel=None)
 
     axes2 = plt.subplot(grid[0, 9 + first_col:12 + first_col])
+    tmp_lr_list = []
+    for i in tmp1.index:
+        tmp_lr_list = tmp_lr_list + [i] * tmp1.shape[1]
 
-    axes2 = sns.barplot(x='weight_sum', y='LR_Pair', data=tmp.head(plot_lr_num))
+    tmp = pd.DataFrame(np.array(tmp1).reshape((repeat_num * plot_lr_num, 1)))
+    tmp.columns = ['layer_attention']
+    tmp['LR_Pair'] = tmp_lr_list
+
+    sns.barplot(x='layer_attention', y='LR_Pair', ax=axes2, data=tmp, ci='sd', capsize=.25, errwidth=1)
+    sns.barplot(x='layer_attention', y='LR_Pair', ax=axes2, data=tmp, ci=None, zorder=10)
+
+    axes2.set_xlim(xmin=0)
     axes2.set(yticklabels=[])
     axes2.set(ylabel=None)
     axes2.set(xlabel=None)
@@ -126,8 +136,9 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
                                adj: torch.Tensor,
                                cell_type_names: List[str],
                                plot_lr: str,
+                               hide_repeat_tqdm: bool = False,
                                **kwargs,
-                               ) -> pd.DataFrame:
+                               ) -> (pd.DataFrame, np.array):
     """
 
     Display the cell-type-level FCE network of a certain LR pair (or all LR pairs) for a certain target gene.
@@ -146,6 +157,8 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
         The list of cell-type names.
     plot_lr :
         The LR pair (in the 'LR_pair' column of lr_df) need to be visualized.
+    hide_repeat_tqdm:
+        If True, hide the tqdm when running.
     kwargs :
         Other parameters in 'cell_type_level_network' function.
 
@@ -156,7 +169,7 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
     """
     SR_network_list = []
     cell_type_impact_list = []
-    for i in tqdm(range(len(trained_MGC_model_list))):
+    for i in tqdm(range(len(trained_MGC_model_list)), disable=hide_repeat_tqdm):
         model = trained_MGC_model_list[i]
         if plot_lr == 'all':
             cell_type_impact = []
@@ -174,12 +187,12 @@ def fce_cell_type_network_plot(trained_MGC_model_list: List[MGC_Model],
         SR_network[row, col] = 0
         SR_network_list.append((SR_network - SR_network.min()) / (SR_network.max() - SR_network.min() + 1e-6))
         cell_type_impact = cell_type_impact.detach().numpy()
-        cell_type_impact_list.append((cell_type_impact - cell_type_impact.min()) / 
+        cell_type_impact_list.append((cell_type_impact - cell_type_impact.min()) /
                                      (cell_type_impact.max() - cell_type_impact.min() + 1e-6))
 
     SR_network = np.stack(SR_network_list).mean(0)
     cell_type_impact = np.stack(cell_type_impact_list).mean(0)
-    
+
     SR_network = (SR_network - SR_network.min()) / (SR_network.max() - SR_network.min() + 1e-6)
 
     cell_type_level_network(sr_network=SR_network,
@@ -237,7 +250,7 @@ def delta_e_proportion(trained_MGC_model_list: List[MGC_Model],
 
     ce_list = []
     b_list = []
-      
+
     for i in tqdm(range(len(trained_MGC_model_list))):
         model = trained_MGC_model_list[i]
         x = model.mgc(adj.matmul(X))
@@ -262,9 +275,9 @@ def delta_e_proportion(trained_MGC_model_list: List[MGC_Model],
 
     proportion_range = tmp_df['delta_e_proportion'].max() - tmp_df['delta_e_proportion'].min()
     if low_ylim is None:
-        low_ylim = max(round(tmp_df['delta_e_proportion'].min() * 20) / 20 - proportion_range/2, 0)
+        low_ylim = max(round(tmp_df['delta_e_proportion'].min() * 20) / 20 - proportion_range / 2, 0)
     if high_ylim is None:
-        high_ylim = min(round(tmp_df['delta_e_proportion'].max() * 20) / 20 + proportion_range/2, 1)
+        high_ylim = min(round(tmp_df['delta_e_proportion'].max() * 20) / 20 + proportion_range / 2, 1)
     ax.set(ylim=(low_ylim, high_ylim))
 
     if fname is not None:

@@ -9,7 +9,8 @@ from tqdm import tqdm
 
 
 def get_gene_expr(adata: AnnData,
-                  lr_df: pd.DataFrame,
+                  lr_df: Optional[pd.DataFrame] = None,
+                  complex_db: Optional[pd.DataFrame] = None,
                   gene_list_on_interest: Optional[List[str]] = None,
                   min_mean: float = 0.05,
                   min_disp: float = 0.5,
@@ -63,9 +64,15 @@ def get_gene_expr(adata: AnnData,
     if gene_list_on_interest is not None:
         used_gene_list = gene_list_on_interest
     else:
+        l_col = list(set(['ligand', 'Ligand_gene_symbol']).intersection(set(lr_df.columns)))[0]
+        r_col = list(set(['receptor', 'Receptor_gene_symbol']).intersection(set(lr_df.columns)))[0]
+        
+        lr_list = np.array(complex_db).reshape(complex_db.shape[0] * complex_db.shape[1])
+        lr_list = np.unique([x for x in lr_list if str(x) != 'nan'])
+
         if remove_lr_gene:
             used_gene_list = list(set(non_zero_exp_genes).intersection(set(hvgenes)) - set(mt_genes)
-                                  - set(lr_df.Ligand_gene_symbol) - set(lr_df.Receptor_gene_symbol))
+                                  - set(lr_df[l_col]) - set(lr_df[r_col]) - set(lr_list))
         else:
             used_gene_list = list(set(non_zero_exp_genes).intersection(set(hvgenes)) - set(mt_genes))
 

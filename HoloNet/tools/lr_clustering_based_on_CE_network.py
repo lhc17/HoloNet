@@ -1,6 +1,7 @@
 from typing import Optional
 
 import pandas as pd
+import sklearn
 import torch
 from anndata._core.anndata import AnnData
 from sklearn.cluster import AgglomerativeClustering
@@ -20,7 +21,7 @@ def cluster_lr_based_on_ce(ce_tensor: torch.Tensor,
                            centrality_measure: str = 'Eigenvector',
                            cell_cci_centrality: Optional[torch.tensor] = None,
                            **kwargs,
-                           ) -> pd.DataFrame:
+                           ) -> (pd.DataFrame, sklearn.cluster._agglomerative.AgglomerativeClustering):
     """
     Cluster the LR pairs using the CE network.
 
@@ -52,11 +53,12 @@ def cluster_lr_based_on_ce(ce_tensor: torch.Tensor,
     Returns
     -------
     A LR-gene dataframe added the 'cluster' column.
+    And a trained hierarchical clustering model
 
     """
-    
+
     seed_torch()
-    
+
     if (cell_cci_centrality is None) and (cluster_based != 'edge_overlap'):
         if centrality_measure == 'Degree':
             cell_cci_centrality = compute_ce_network_degree_centrality(ce_tensor, **kwargs)
@@ -64,7 +66,7 @@ def cluster_lr_based_on_ce(ce_tensor: torch.Tensor,
             cell_cci_centrality = compute_ce_network_eigenvector_centrality(ce_tensor, **kwargs)
 
     if cluster_based == 'node_centrality_euclidean':
-        Agglo = AgglomerativeClustering(n_clusters=n_clusters)
+        Agglo = AgglomerativeClustering(n_clusters=n_clusters, compute_distances=True)
         Agglo = Agglo.fit(cell_cci_centrality)
 
     if cluster_based == 'node_centrality_physical':
@@ -72,7 +74,8 @@ def cluster_lr_based_on_ce(ce_tensor: torch.Tensor,
         physical_dist = cell_cci_centrality.matmul(dist_factor).matmul(cell_cci_centrality.T)
         physical_dist = (physical_dist / cell_cci_centrality.sum(1)).T / cell_cci_centrality.sum(1)
 
-        Agglo = AgglomerativeClustering(n_clusters=n_clusters, affinity='precomputed', linkage='average')
+        Agglo = AgglomerativeClustering(n_clusters=n_clusters, affinity='precomputed', linkage='average',
+                                        compute_distances=True)
         Agglo = Agglo.fit(1 / physical_dist)
 
     if cluster_based == 'edge_overlap':
@@ -82,10 +85,11 @@ def cluster_lr_based_on_ce(ce_tensor: torch.Tensor,
             tmp = abs(ce_tensor[i] - ce_tensor[i + 1:]) / (ce_tensor[i] + ce_tensor[i + 1:] + 1e-6)
             dissimilarity[i, i + 1:] = tmp.sum(-1).sum(-1)
 
-        Agglo = AgglomerativeClustering(n_clusters=4, affinity='precomputed', linkage='complete')
+        Agglo = AgglomerativeClustering(n_clusters=n_clusters, affinity='precomputed', linkage='complete',
+                                        compute_distances=True)
         dissimilarity = dissimilarity + dissimilarity.T
         Agglo = Agglo.fit(dissimilarity / dissimilarity.max())
 
     lr_df['cluster'] = Agglo.labels_
 
-    return lr_df
+    return lr_df, Agglo

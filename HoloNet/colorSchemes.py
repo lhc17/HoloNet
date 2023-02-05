@@ -10,6 +10,16 @@ brca_default_color_celltype = {"basal_like_1": "#a65628",
                                "Bcell": "#fdbf6f",
                                }
 
+hcc_default_color_celltype = {"Malignancy": "#a65628",
+                               "Fibroblasts": "#4daf4a",
+                               "Hepatocytes": "#984ea3",
+                               "Myeloid cells": "#ffff33",
+                               "T cells": "#377eb8",
+                               "Endothelial cells": "#f781bf",
+                               "B cells": "#fdbf6f",
+                              "NK cells": "#e41a1c",
+                               }
+
 # general color sheet
 color_sheet = {
     'red_qualitative': '#e41a1c',

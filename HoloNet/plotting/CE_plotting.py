@@ -140,7 +140,6 @@ def ce_cell_type_network_plot(ce_tensor: torch.Tensor,
                             fname=fname,
                             **kwargs)
 
-
     SR_network = pd.DataFrame(SR_network, index=cell_type_names, columns=cell_type_names)
 
     return SR_network

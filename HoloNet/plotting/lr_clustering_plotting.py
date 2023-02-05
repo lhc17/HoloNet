@@ -6,7 +6,9 @@ import numpy as np
 import pandas as pd
 import torch
 import umap
+import sklearn
 from anndata._core.anndata import AnnData
+from scipy.cluster.hierarchy import dendrogram
 
 from .base_plot import feature_plot
 from ..colorSchemes import color_sheet
@@ -47,8 +49,13 @@ def lr_umap(lr_df: pd.DataFrame,
 
     LR_cluster_data = pd.DataFrame(embedding)
     LR_cluster_data.columns = ['dim1', 'dim2']
-    LR_cluster_data['cluster'] = cluster
-    LR_cluster_data.index = lr_df.LR_Pair
+
+    if len(str(lr_df.index[0])) > 1:
+        LR_cluster_data.index = lr_df.LR_Pair
+        LR_cluster_data['cluster'] = cluster
+    else:
+        LR_cluster_data['cluster'] = cluster
+        LR_cluster_data.index = lr_df.LR_Pair
 
     fig, ax = plt.subplots(1, 1, figsize=(5, 5))
     # Hide the right and top spines
@@ -91,6 +98,78 @@ def lr_umap(lr_df: pd.DataFrame,
     plt.show()
 
 
+def lr_clustering_dendrogram(model: sklearn.cluster._agglomerative.AgglomerativeClustering,
+                             lr_df: pd.DataFrame,
+                             plot_lr_list: Optional[List[str]] = None,
+                             dflt_col: str = '#000000',
+                             colors: Optional[List[str]] = None,
+                             fname: Optional[Union[str, Path]] = None,
+                             ):
+    """
+
+    Plot dendrogram plot for the hierarchical clustering model.
+
+    Parameters
+    ----------
+    model :
+        Trained hierarchical clustering model.
+    lr_df :
+        A preprocessed LR-gene dataframe.
+    plot_lr_list :
+        Lr pair on interest, which will be plot in dendrogram plot
+    dflt_col :
+        Color of root.
+    colors :
+        Colors of each cluster.
+    fname :
+        The output file name. If None, not save the figure.
+
+    """
+    counts = np.zeros(model.children_.shape[0])
+    n_samples = len(model.labels_)
+    for i, merge in enumerate(model.children_):
+        current_count = 0
+        for child_idx in merge:
+            if child_idx < n_samples:
+                current_count += 1  # leaf node
+            else:
+                current_count += counts[child_idx - n_samples]
+        counts[i] = current_count
+
+    linkage_matrix = np.column_stack(
+        [model.children_, model.distances_, counts]
+    ).astype(float)
+
+    if colors is None:
+        colors = ["#4daf4a", "#377eb8", "#984ea3", "#ff7f00", "#a65628", "#ffff33", "#999999", "#fdbf6f"]
+
+    D_leaf_colors = {}
+    for i, label in enumerate(model.labels_):
+        D_leaf_colors['attr_' + str(i)] = colors[label]
+
+    link_cols = {}
+    for i, i12 in enumerate(linkage_matrix[:, :2].astype(int)):
+        c1, c2 = (link_cols[x] if x > len(linkage_matrix) else D_leaf_colors["attr_%d" % x]
+                  for x in i12)
+        link_cols[i + 1 + len(linkage_matrix)] = c1 if c1 == c2 else dflt_col
+
+    tmp_lr_list = []
+    if plot_lr_list is not None:
+        for i in list(lr_df['LR_Pair']):
+            if i in plot_lr_list:
+                tmp_lr_list.append(i)
+            else:
+                tmp_lr_list.append('')
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    D = dendrogram(Z=linkage_matrix, labels=tmp_lr_list, color_threshold=None,
+                   leaf_font_size=8, link_color_func=lambda x: link_cols[x], ax=ax)
+    plt.xticks(rotation=45, ha='right')
+    if fname is not None:
+        plt.savefig(fname)
+    plt.show()
+
+
 def lr_cluster_ce_hotspot_plot(lr_df: pd.DataFrame,
                                cell_cci_centrality: torch.Tensor,
                                adata: AnnData,
@@ -126,12 +205,12 @@ def lr_cluster_ce_hotspot_plot(lr_df: pd.DataFrame,
         tmp_list.append(cell_cci_centrality[tmp_index].sum(0))
 
     clusters = ['cluster' + str(i) for i in np.unique(lr_df[cluster_col])]
-    
+
     if fname is None:
         for i, cluster_i in enumerate(clusters):
             feature_plot(torch.stack(tmp_list), adata, feature_names=clusters,
-                         plot_feature=cluster_i,  **kwargs)
-            
+                         plot_feature=cluster_i, **kwargs)
+
     else:
         for i, cluster_i in enumerate(clusters):
             feature_plot(torch.stack(tmp_list), adata, feature_names=clusters,

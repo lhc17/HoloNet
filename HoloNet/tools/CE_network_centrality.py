@@ -1,13 +1,14 @@
-from copy import copy
+from copy import deepcopy
 
 import numpy as np
 import torch
+from tqdm import tqdm
 
 
 def compute_ce_network_eigenvector_centrality(ce_tensor: torch.Tensor,
-                                              max_iter: int = 100,
-                                              tol: float = 1e-4,
-                                              diff_thres: float = 0.05,
+                                              max_iter: int = 500,
+                                              tol: float = 0.1,
+                                              diff_thres: float = 0.1,
                                               ) -> torch.Tensor:
     """
     Calculate the eigenvector centrality of each cell in the CE network.
@@ -28,19 +29,25 @@ def compute_ce_network_eigenvector_centrality(ce_tensor: torch.Tensor,
     A tensor (LR_num * cell_num) for the eigenvector centrality of each cell according to each LR pair.
 
     """
-    undirected_ce_tensor = ce_tensor + ce_tensor.permute(0, 2, 1)
-    cell_num = ce_tensor.shape[2]
-    LR_num = ce_tensor.shape[0]
-    x = torch.ones([cell_num, LR_num]) / cell_num
+    x_tensor = []
+    for i in tqdm(range(ce_tensor.shape[0])):
+        tmp_ce_tensor = ce_tensor[i].unsqueeze(0)
+        undirected_ce_tensor = tmp_ce_tensor + tmp_ce_tensor.permute(0, 2, 1)
+        cell_num = tmp_ce_tensor.shape[2]
+        LR_num = tmp_ce_tensor.shape[0]
+        x = torch.ones([cell_num, LR_num]) / cell_num
 
-    for i in range(max_iter):
-        xlast = copy(x)
-        x = x.T.unsqueeze(1).matmul(undirected_ce_tensor.to(torch.float32)).squeeze(1).T
-        norm = (x ** 2).sum(0)
-        x = x / norm
-        if len(np.where((abs(xlast - x).sum(0)) > diff_thres)[0]) < cell_num * tol:
-            break
-    return x.T
+        for i in range(max_iter):
+            xlast = deepcopy(x)
+            x = x.T.unsqueeze(1).matmul(undirected_ce_tensor.to(torch.float32)).squeeze(1).T
+            norm = (x ** 2).sum(0)
+            x = x / norm
+            if len(np.where(abs(xlast - x) > diff_thres)[0]) < cell_num * tol:
+                break
+        x_tensor.append(x)
+
+    x_tensor = torch.cat(x_tensor, dim=1).T
+    return x_tensor
 
 
 def compute_ce_network_degree_centrality(ce_tensor: torch.Tensor,
