@@ -106,7 +106,7 @@ We provide samples here so that users can import MITAB-compliant ligand-receptor
 .. code:: ipython3
 
     pd.set_option('display.max_columns', None)
-    interaction_db_MITAB = pd.read_csv('data/cellchatdb_human_interaction_example_with_MITAB.csv', index_col=0)
+    interaction_db_MITAB = pd.read_csv('cellchatdb_human_interaction_example_with_MITAB.csv', index_col=0)
     interaction_db_MITAB.head()
 
 .. raw:: html
