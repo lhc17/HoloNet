@@ -100,6 +100,223 @@ in a certain percentage of cells (or spots).
 
     (325, 12)
 
+We also allow access to ligand-receptor pair databases based on the MITAB canonicalized nomenclature.
+We provide samples here so that users can import MITAB-compliant ligand-receptor databases and replace ``interaction_db``
+
+.. code:: ipython3
+
+    pd.set_option('display.max_columns', None)
+    interaction_db_MITAB = pd.read_csv('data/cellchatdb_human_interaction_example_with_MITAB.csv', index_col=0)
+    interaction_db_MITAB.head()
+
+.. raw:: html
+
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>interaction_name</th>
+          <th>pathway_name</th>
+          <th>ligand</th>
+          <th>receptor</th>
+          <th>agonist</th>
+          <th>antagonist</th>
+          <th>co_A_receptor</th>
+          <th>co_I_receptor</th>
+          <th>evidence</th>
+          <th>annotation</th>
+          <th>interaction_name_2</th>
+          <th>LR_pair</th>
+          <th>#ID Interactor A</th>
+          <th>ID Interactor B</th>
+          <th>Alt IDs Interactor A</th>
+          <th>Alt IDs Interactor B</th>
+          <th>Aliases Interactor A</th>
+          <th>Aliases Interactor B</th>
+          <th>Interaction Detection Method</th>
+          <th>Publication 1st Author</th>
+          <th>Publication Identifiers</th>
+          <th>Taxid Interactor A</th>
+          <th>Taxid Interactor B</th>
+          <th>Interaction Types</th>
+          <th>Source Database</th>
+          <th>Interaction Identifiers</th>
+          <th>Confidence Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>TGFA_EGFR</td>
+          <td>EGF</td>
+          <td>TGFA</td>
+          <td>EGFR</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>KEGG: hsa04012</td>
+          <td>Secreted Signaling</td>
+          <td>TGFA - EGFR</td>
+          <td>TGFA:EGFR</td>
+          <td>entrez gene/locuslink:1956</td>
+          <td>entrez gene/locuslink:7039</td>
+          <td>biogrid:108276|entrez gene/locuslink:EGFR|unip...</td>
+          <td>biogrid:112897|entrez gene/locuslink:TGFA|unip...</td>
+          <td>entrez gene/locuslink:ERBB(gene name synonym)|...</td>
+          <td>entrez gene/locuslink:TFGA(gene name synonym)</td>
+          <td>psi-mi:"MI:0018"(two hybrid)</td>
+          <td>Kotlyar M (2015)</td>
+          <td>pubmed:25402006</td>
+          <td>taxid:9606</td>
+          <td>taxid:9606</td>
+          <td>psi-mi:"MI:0407"(direct interaction)</td>
+          <td>psi-mi:"MI:0463"(biogrid)</td>
+          <td>biogrid:1067440</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <th>1</th>
+          <td>OSM_OSMR_IL6ST</td>
+          <td>OSM</td>
+          <td>OSM</td>
+          <td>OSMR_IL6ST</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>KEGG: hsa04060</td>
+          <td>Secreted Signaling</td>
+          <td>OSM - (OSMR+IL6ST)</td>
+          <td>OSM:OSMR_IL6ST</td>
+          <td>entrez gene/locuslink:5008</td>
+          <td>entrez gene/locuslink:3572</td>
+          <td>biogrid:111049|entrez gene/locuslink:OSM|unipr...</td>
+          <td>biogrid:109786|entrez gene/locuslink:IL6ST|uni...</td>
+          <td>-</td>
+          <td>entrez gene/locuslink:CD130(gene name synonym)...</td>
+          <td>psi-mi:"MI:0004"(affinity chromatography techn...</td>
+          <td>Huttlin EL (2015)</td>
+          <td>pubmed:26186194</td>
+          <td>taxid:9606</td>
+          <td>taxid:9606</td>
+          <td>psi-mi:"MI:0915"(physical association)</td>
+          <td>psi-mi:"MI:0463"(biogrid)</td>
+          <td>biogrid:1176790</td>
+          <td>score:0.999999936</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td>TNFSF9_TNFRSF9</td>
+          <td>CD137</td>
+          <td>TNFSF9</td>
+          <td>TNFRSF9</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>KEGG: hsa04060</td>
+          <td>Secreted Signaling</td>
+          <td>TNFSF9 - TNFRSF9</td>
+          <td>TNFSF9:TNFRSF9</td>
+          <td>entrez gene/locuslink:3604</td>
+          <td>entrez gene/locuslink:8744</td>
+          <td>biogrid:109817|entrez gene/locuslink:TNFRSF9|u...</td>
+          <td>biogrid:114281|entrez gene/locuslink:TNFSF9|un...</td>
+          <td>entrez gene/locuslink:4-1BB(gene name synonym)...</td>
+          <td>entrez gene/locuslink:4-1BB-L(gene name synony...</td>
+          <td>psi-mi:"MI:0004"(affinity chromatography techn...</td>
+          <td>Huttlin EL (2015)</td>
+          <td>pubmed:26186194</td>
+          <td>taxid:9606</td>
+          <td>taxid:9606</td>
+          <td>psi-mi:"MI:0915"(physical association)</td>
+          <td>psi-mi:"MI:0463"(biogrid)</td>
+          <td>biogrid:1177155</td>
+          <td>score:0.992349156</td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td>EFNB2_EPHB2</td>
+          <td>EPHB</td>
+          <td>EFNB2</td>
+          <td>EPHB2</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>PMID: 15114347</td>
+          <td>Cell-Cell Contact</td>
+          <td>EFNB2 - EPHB2</td>
+          <td>EFNB2:EPHB2</td>
+          <td>entrez gene/locuslink:1948</td>
+          <td>entrez gene/locuslink:2048</td>
+          <td>biogrid:108268|entrez gene/locuslink:EFNB2|ent...</td>
+          <td>biogrid:108362|entrez gene/locuslink:EPHB2|uni...</td>
+          <td>entrez gene/locuslink:EPLG5(gene name synonym)...</td>
+          <td>entrez gene/locuslink:CAPB(gene name synonym)|...</td>
+          <td>psi-mi:"MI:0004"(affinity chromatography techn...</td>
+          <td>Huttlin EL (2015)</td>
+          <td>pubmed:26186194</td>
+          <td>taxid:9606</td>
+          <td>taxid:9606</td>
+          <td>psi-mi:"MI:0915"(physical association)</td>
+          <td>psi-mi:"MI:0463"(biogrid)</td>
+          <td>biogrid:1177983</td>
+          <td>score:0.999999507</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td>EFNB2_EPHB3</td>
+          <td>EPHB</td>
+          <td>EFNB2</td>
+          <td>EPHB3</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>NaN</td>
+          <td>PMID: 15114347</td>
+          <td>Cell-Cell Contact</td>
+          <td>EFNB2 - EPHB3</td>
+          <td>EFNB2:EPHB3</td>
+          <td>entrez gene/locuslink:1948</td>
+          <td>entrez gene/locuslink:2049</td>
+          <td>biogrid:108268|entrez gene/locuslink:EFNB2|ent...</td>
+          <td>biogrid:108363|entrez gene/locuslink:EPHB3|uni...</td>
+          <td>entrez gene/locuslink:EPLG5(gene name synonym)...</td>
+          <td>entrez gene/locuslink:ETK2(gene name synonym)|...</td>
+          <td>psi-mi:"MI:0004"(affinity chromatography techn...</td>
+          <td>Huttlin EL (2015)</td>
+          <td>pubmed:26186194</td>
+          <td>taxid:9606</td>
+          <td>taxid:9606</td>
+          <td>psi-mi:"MI:0915"(physical association)</td>
+          <td>psi-mi:"MI:0463"(biogrid)</td>
+          <td>biogrid:1177984</td>
+          <td>score:0.999990606</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+.. code:: ipython3
+
+    expressed_lr_df = hn.pp.get_expressed_lr_df(interaction_db_MITAB, complex_db, adata)
+
 
 Constructing multi-view CE network
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -135,7 +352,18 @@ Then we filter the edges with low specificities.
 .. note::
     This step will consume a lot of memory.
     If you run out of memory, you can choose to only compute communication networks with fewer ligand-receptor pairs, and turn down the value of ``n_pairs`` parameter in :func:`HoloNet.tools.filter_ce_tensor`
-    We are working on a new version to solve this problem.
+    Also, you can set ``copy=False`` in ``hn.tl.filter_ce_tensor`` or down-sample the dataset to reduced memory consumption.
+    When setting ``cut_porp`` as 2, we can run the whole tutorial on Macbook Pro (16G RAM, Apple M1 pro).
+
+.. code:: ipython3
+
+    import random
+    cut_porp = 2
+    adata_subset = adata[random.sample(list(adata.obs_names), round(adata.shape[0] / cut_porp))]
+    elements_expr_df_dict = hn.tl.elements_expr_df_calculate(expressed_lr_df, complex_db, cofactor_db, adata_subset)
+    ce_tensor = hn.tl.compute_ce_tensor(expressed_lr_df, w_best, elements_expr_df_dict, adata_subset)
+    filtered_ce_tensor = hn.tl.filter_ce_tensor(ce_tensor, adata_subset, expressed_lr_df, 
+                                                elements_expr_df_dict, w_best, copy=False)
 
 
 Visualizing CEs
