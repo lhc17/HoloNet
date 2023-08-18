@@ -52,6 +52,7 @@ doc = [
     'sphinx>=4.2',
     'sphinx_rtd_theme>=0.4',
     'scanpydoc[typehints]>=0.7.5',
+    'sphinx-book-theme',
     'docutils<0.18',
     # for tutorial
     'nbsphinx>=0.6.0,!=0.8.8', # https://github.com/spatialaudio/nbsphinx/issues/620, should be patched in >=0.8.9
