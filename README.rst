@@ -31,7 +31,7 @@ Installation
 ^^^^^^^^^^^^
 You need to have Python 3.8 or newer installed on your system.
 
-The latest release of `HoloNet` can be installed from `PyPI <https://pypi.org/project/infercnvpy/>`_:
+The latest release of `HoloNet` can be installed from `PyPI <https://pypi.org/project/HoloNet/>`_:
 
 .. code-block::
         
